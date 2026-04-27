@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solworxs — Choose Your AI Bot</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+        rel="stylesheet" />
+</head>
+
+<body>
+
+    <!-- BG -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- ═══════════════════════════════════════
+       FULL-SCREEN RECOMMENDATION MODAL
+  ═══════════════════════════════════════ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <canvas class="modal-canvas" id="modalCanvas"></canvas>
+
+        <div class="modal-card" id="modalCard">
+
+            <!-- Sol peeking from top -->
+            <!-- <div class="modal-sol-wrap">
+                <div class="modal-sol">
+                    <div class="msol-antenna"></div>
+                    <div class="msol-eyes">
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="msol-mouth"></div>
+                </div> -->
+                <!-- <div class="msol-speech">👇 This one's for you!</div> -->
+            <!-- </div> -->
+
+            <!-- Location pill -->
+            <div class="modal-location-pill" id="modalLocationPill">
+                <i class="fa-solid fa-location-crosshairs"></i>
+                <span id="modalLocation">Detecting location…</span>
+            </div>
+
+            <!-- Star badge -->
+            <div class="modal-rec-badge">
+                <i class="fa-solid fa-star"></i> Recommended for You
+            </div>
+
+            <!-- Bot icon -->
+            <div class="modal-bot-icon" id="modalBotIcon">
+                <i class="fa-solid fa-robot" id="modalIcon"></i>
+            </div>
+
+            <!-- Title + desc -->
+            <h2 class="modal-title" id="modalTitle">Loading…</h2>
+            <p class="modal-desc" id="modalDesc">Detecting your region…</p>
+
+            <!-- Features -->
+            <ul class="modal-features" id="modalFeatures"></ul>
+
+            <!-- CTAs -->
+            <div class="modal-actions">
+                <a href="#" class="btn-modal-yes" id="modalCTA" target="_blank">
+                    <i id="modalCTAIcon" class="fa-solid fa-robot"></i>
+                    <span id="modalCTAText">Get Started</span>
+                    <div class="btn-shine"></div>
+                </a>
+                <button class="btn-modal-no" id="modalDecline">
+                    Not for me &mdash; show me all options
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+       MAIN PAGE
+  ═══════════════════════════════════════ -->
+    <div class="page-wrap" id="pageWrap">
+
+        <header class="header">
+            <div class="logo">
+                <span class="logo-s">S</span><span class="logo-rest">olworxs</span>
+                <span class="logo-tag">AI Platform</span>
+            </div>
+            <div class="header-pill">
+                <span class="pulse-dot"></span> 2 Bots Live
+            </div>
+        </header>
+
+        <section class="hero">
+            <p class="hero-eyebrow">Intelligent Automation · Choose Your Assistant</p>
+            <h1 class="hero-title">Pick the bot that<br><em>fits your world.</em></h1>
+            <p class="hero-sub" id="locationLine">Detecting your region…</p>
+        </section>
+
+        <div class="choose-label">
+            <span><i class="fa-solid fa-hand-pointer"></i> Both bots are live — pick yours</span>
+        </div>
+
+        <section class="cards-section">
+            <div class="cards-wrapper" id="cardsWrapper">
+
+                <!-- WhatsApp Bot -->
+                <div class="bot-card" id="cardWhatsapp">
+                    <div class="card-glow"></div>
+                    <div class="card-badge wa-badge" id="badgeWhatsapp" style="display:none">
+                        <i class="fa-solid fa-star"></i> Best for Your Region
+                    </div>
+                    <div class="card-icon whatsapp-icon">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>WhatsApp Bot</h2>
+                        <p class="card-tagline">Automate on the world's most-used messaging app.</p>
+                        <ul class="card-features">
+                            <li><i class="fa-solid fa-circle-check"></i> Instant Customer Replies</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Auto Lead Collection</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Order Status Updates</li>
+                            <li><i class="fa-solid fa-circle-check"></i> 24/7 WhatsApp Support</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Higher Conversion Rate</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://wa.me/15551688355?text=Hi%20Solworxs!" target="_blank"
+                            class="btn-card whatsapp-btn">
+                            <i class="fa-brands fa-whatsapp"></i> Open on WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI Bot -->
+                <div class="bot-card" id="cardAI">
+                    <div class="card-glow"></div>
+                    <div class="card-badge ai-badge" id="badgeAI" style="display:none">
+                        <i class="fa-solid fa-star"></i> Best for Your Region
+                    </div>
+                    <div class="card-icon ai-icon">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>AI Assistant Bot</h2>
+                        <p class="card-tagline">Smart, adaptive, always-on enterprise intelligence.</p>
+                        <ul class="card-features">
+                            <li><i class="fa-solid fa-circle-check"></i> Instant Smart Replies</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Lead Capture Flow</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Automated Follow-up</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Conversion Analytics</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Demo Booking Support</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="chatbots/assistant.html" class="btn-card ai-btn">
+                            <i class="fa-solid fa-robot"></i> Launch AI Bot
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>© 2026 Solworxs · <a href="mailto:info@solworxs.com">info@solworxs.com</a> · Bangalore, India</p>
+        </footer>
+
+    </div><!-- /page-wrap -->
+
+    <!-- ROAMING SOL -->
+    <div class="agent-bot" id="agentBot">
+        <div class="agent-body">
+            <div class="agent-antenna"></div>
+            <div class="agent-eyes">
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+            </div>
+            <div class="agent-mouth"></div>
+            <div class="agent-arms">
+                <div class="arm left-arm"></div>
+                <div class="arm right-arm"></div>
+            </div>
+        </div>
+        <div class="agent-bubble" id="agentBubble">
+            <p id="agentMsg">👋 Hey! I'm Sol!</p>
+            <div class="bubble-tail"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
