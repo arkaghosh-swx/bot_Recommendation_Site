@@ -7,6 +7,7 @@
     <title>Solworxs — Choose Your AI Bot</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="/assets/logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
         rel="stylesheet" />
@@ -20,29 +21,62 @@
     <div class="bg-glow glow-2"></div>
 
     <!-- ═══════════════════════════════════════
+       COOKIE / LOCATION CONSENT BANNER
+  ═══════════════════════════════════════ -->
+    <div class="consent-backdrop" id="consentBackdrop"></div>
+    <div class="consent-banner" id="consentBanner">
+
+        <div class="consent-icon-wrap">
+            <div class="consent-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="consent-ping"></div>
+        </div>
+
+        <div class="consent-body">
+            <h3>We'd like to personalise your experience</h3>
+            <p>
+                Solworxs uses your <strong>approximate location</strong> (via IP address) to recommend
+                the best bot for your region. No personal data is stored or shared.
+                <a href="#" class="consent-learn" id="consentLearnMore">Learn more ↗</a>
+            </p>
+
+            <!-- Expandable detail -->
+            <div class="consent-detail" id="consentDetail">
+                <ul>
+                    <li><i class="fa-solid fa-circle-check"></i> We detect your <strong>country &amp; city</strong>
+                        using your IP address only</li>
+                    <li><i class="fa-solid fa-circle-check"></i> No cookies are set without your permission</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Data is used solely to show the right bot
+                        recommendation</li>
+                    <li><i class="fa-solid fa-circle-xmark red"></i> We do <strong>not</strong> store, sell, or share
+                        your location data</li>
+                </ul>
+            </div>
+
+            <div class="consent-actions">
+                <button class="btn-consent-accept" id="consentAccept">
+                    <i class="fa-solid fa-circle-check"></i> Accept &amp; Continue
+                </button>
+                <button class="btn-consent-decline" id="consentDeclineBtn">
+                    <i class="fa-solid fa-ban"></i> Decline
+                </button>
+            </div>
+
+            <p class="consent-note">
+                <i class="fa-solid fa-lock"></i>
+                By accepting, you agree to our use of IP-based location detection for personalisation only.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
        FULL-SCREEN RECOMMENDATION MODAL
   ═══════════════════════════════════════ -->
     <div class="modal-overlay" id="modalOverlay">
         <canvas class="modal-canvas" id="modalCanvas"></canvas>
 
         <div class="modal-card" id="modalCard">
-
-            <!-- Sol peeking from top -->
-            <!-- <div class="modal-sol-wrap">
-                <div class="modal-sol">
-                    <div class="msol-antenna"></div>
-                    <div class="msol-eyes">
-                        <div class="eye">
-                            <div class="pupil"></div>
-                        </div>
-                        <div class="eye">
-                            <div class="pupil"></div>
-                        </div>
-                    </div>
-                    <div class="msol-mouth"></div>
-                </div> -->
-                <!-- <div class="msol-speech">👇 This one's for you!</div> -->
-            <!-- </div> -->
 
             <!-- Location pill -->
             <div class="modal-location-pill" id="modalLocationPill">

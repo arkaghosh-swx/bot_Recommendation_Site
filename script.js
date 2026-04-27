@@ -208,8 +208,11 @@ async function detectAndRecommend() {
         locationLine.textContent = `📍 ${locStr}`;
 
         // India → WhatsApp; elsewhere → AI
-        currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";
-// For testing: currentRecommendedKey = "test";
+        currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";  
+        // // original
+        // currentRecommendedKey = "ai";  
+        // // TEMP: force outside-India for testing
+
         populateModal(currentRecommendedKey, `📍 ${locStr}`);
 
         // Update agent quip
@@ -222,7 +225,86 @@ async function detectAndRecommend() {
     }
 }
 
-detectAndRecommend();
+/* ══════════════════════════════════════════
+   CONSENT BANNER — gates geo fetch
+══════════════════════════════════════════ */
+
+/* agentSay defined early so consent handlers can call it */
+const agentMsgEl = document.getElementById("agentMsg");
+agentMsgEl.style.transition = "opacity .3s ease";
+function agentSay(text) {
+    agentMsgEl.style.opacity = "0";
+    setTimeout(() => {
+        agentMsgEl.textContent = text;
+        agentMsgEl.style.opacity = "1";
+    }, 250);
+}
+
+const consentBanner = document.getElementById("consentBanner");
+const consentBackdrop = document.getElementById("consentBackdrop");
+const consentAccept = document.getElementById("consentAccept");
+const consentDeclineBtn = document.getElementById("consentDeclineBtn");
+const consentLearnMore = document.getElementById("consentLearnMore");
+const consentDetail = document.getElementById("consentDetail");
+
+const CONSENT_KEY = "solworxs_geo_consent";
+
+function showConsent() {
+    // Slide up after short delay so page renders first
+    setTimeout(() => {
+        consentBackdrop.classList.add("active");
+        consentBanner.classList.add("active");
+    }, 600);
+}
+
+function hideConsent() {
+    consentBanner.classList.add("gone");
+    consentBackdrop.classList.remove("active");
+    setTimeout(() => consentBanner.remove(), 500);
+}
+
+// "Learn more" toggles expanded detail
+consentLearnMore.addEventListener("click", (e) => {
+    e.preventDefault();
+    consentDetail.classList.toggle("open");
+    consentLearnMore.textContent = consentDetail.classList.contains("open")
+        ? "Show less ↑" : "Learn more ↗";
+});
+
+// ACCEPT → store consent, run geo, close banner
+consentAccept.addEventListener("click", () => {
+    localStorage.setItem(CONSENT_KEY, "accepted");
+    hideConsent();
+    agentSay("✅ Thanks! Detecting your region…");
+    detectAndRecommend();
+});
+
+// DECLINE → no geo fetch, use default AI recommendation
+consentDeclineBtn.addEventListener("click", () => {
+    localStorage.setItem(CONSENT_KEY, "declined");
+    hideConsent();
+    agentSay("🔒 No worries! Showing default recommendation.");
+    populateModal("ai", "📍 Location not shared");
+    locationLine.textContent = "📍 Location not shared";
+});
+
+// Check if user already gave consent previously
+function initConsent() {
+    const saved = localStorage.getItem(CONSENT_KEY);
+    if (saved === "accepted") {
+        // Already accepted before — skip banner, run geo silently
+        detectAndRecommend();
+    } else if (saved === "declined") {
+        // Already declined — use default, no banner
+        populateModal("ai", "📍 Location not shared");
+        locationLine.textContent = "📍 Location not shared";
+    } else {
+        // First visit — show the banner, hold the modal in loading state
+        showConsent();
+    }
+}
+
+initConsent();
 
 /* ══════════════════════════════════════════
    ROAMING AGENT — SOL
@@ -241,22 +323,11 @@ const agentLines = [
 
 const agentBot = document.getElementById("agentBot");
 const agentBubble = document.getElementById("agentBubble");
-const agentMsgEl = document.getElementById("agentMsg");
 
 let lineIndex = 0;
 let roamActive = false;
 let botX = 36, botY = window.innerHeight - 140;
 let targetX = botX, targetY = botY;
-
-agentMsgEl.style.transition = "opacity .3s ease";
-
-function agentSay(text) {
-    agentMsgEl.style.opacity = "0";
-    setTimeout(() => {
-        agentMsgEl.textContent = text;
-        agentMsgEl.style.opacity = "1";
-    }, 250);
-}
 
 function cycleAgentMessage() {
     agentSay(agentLines[lineIndex % agentLines.length]);
@@ -275,7 +346,8 @@ function newRoamTarget() {
 }
 
 function roamTick() {
-    if (!roamActive) { requestAnimationFrame(roamTick); return; }
+    // Skip position update while user is dragging
+    if (!roamActive || isDragging) { requestAnimationFrame(roamTick); return; }
 
     botX = lerp(botX, targetX, 0.013);
     botY = lerp(botY, targetY, 0.013);
@@ -284,10 +356,7 @@ function roamTick() {
     agentBot.style.top = botY + "px";
     agentBot.style.bottom = "auto";
 
-    // Flip bubble direction near right edge
-    const nearRight = botX > window.innerWidth - 270;
-    agentBubble.style.left = nearRight ? "auto" : "0";
-    agentBubble.style.right = nearRight ? "0" : "auto";
+    updateBubbleSide();
 
     // When close to target, pick a new one after a pause
     if (Math.abs(targetX - botX) < 5 && Math.abs(targetY - botY) < 5) {
@@ -297,24 +366,116 @@ function roamTick() {
     requestAnimationFrame(roamTick);
 }
 
+function updateBubbleSide() {
+    const nearRight = botX > window.innerWidth - 270;
+    agentBubble.style.left = nearRight ? "auto" : "0";
+    agentBubble.style.right = nearRight ? "0" : "auto";
+}
+
 function startRoaming() {
     roamActive = true;
     newRoamTarget();
 }
 
-// Start animation loop immediately (Sol is visible behind modal too)
+// Start animation loop immediately
 roamTick();
 
-// Click Sol for a line
+/* ══════════════════════════════════════════
+   DRAG — mouse + touch
+══════════════════════════════════════════ */
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let hasMoved = false;   // distinguish drag vs click
+let resumeTimer = null;
+
+function getEventXY(e) {
+    if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+}
+
+function onDragStart(e) {
+    // Don't start drag on the CTA buttons inside Sol
+    if (e.target.closest("a, button")) return;
+
+    const { x, y } = getEventXY(e);
+    isDragging = true;
+    hasMoved = false;
+    dragOffsetX = x - botX;
+    dragOffsetY = y - botY;
+
+    clearTimeout(resumeTimer);
+
+    agentBot.style.cursor = "grabbing";
+    agentBot.style.animation = "none";        // pause float bob while dragging
+    agentBot.style.transition = "none";
+
+    agentSay("✋ Dragging me around?");
+
+    // Prevent text selection while dragging
+    e.preventDefault();
+}
+
+function onDragMove(e) {
+    if (!isDragging) return;
+    const { x, y } = getEventXY(e);
+
+    // Clamp within viewport with a margin
+    const margin = 20;
+    botX = Math.min(Math.max(x - dragOffsetX, margin), window.innerWidth - 90 - margin);
+    botY = Math.min(Math.max(y - dragOffsetY, margin), window.innerHeight - 110 - margin);
+
+    agentBot.style.left = botX + "px";
+    agentBot.style.top = botY + "px";
+    agentBot.style.bottom = "auto";
+
+    updateBubbleSide();
+    hasMoved = true;
+    e.preventDefault();
+}
+
+function onDragEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+
+    agentBot.style.cursor = "grab";
+    agentBot.style.animation = "";   // restore float bob
+
+    if (hasMoved) {
+        // Drop — Sol stays put for 2s, then resumes roaming from new spot
+        agentSay("📌 Dropped! I'll roam from here.");
+        targetX = botX;
+        targetY = botY;
+
+        resumeTimer = setTimeout(() => {
+            agentSay("🚶 Back to roaming!");
+            newRoamTarget();
+        }, 2000);
+    }
+}
+
+// Mouse events
+agentBot.addEventListener("mousedown", onDragStart);
+document.addEventListener("mousemove", onDragMove);
+document.addEventListener("mouseup", onDragEnd);
+
+// Touch events (mobile)
+agentBot.addEventListener("touchstart", onDragStart, { passive: false });
+document.addEventListener("touchmove", onDragMove, { passive: false });
+document.addEventListener("touchend", onDragEnd);
+
+// ── Click Sol for a line (only if not dragged) ──
 const clickLines = [
     "😄 I'm Sol — pick a bot!",
     "📱 WhatsApp Bot = conversational!",
     "🧠 AI Bot = deep automation!",
     "🎯 Both bots have 24/7 support!",
     "🔥 Tap the card to explore!",
+    "🖱️ You can drag me anywhere!",
 ];
 let clickIdx = 0;
 agentBot.addEventListener("click", () => {
+    if (hasMoved) return;   // was a drag, not a click
     agentSay(clickLines[clickIdx % clickLines.length]);
     clickIdx++;
 });
