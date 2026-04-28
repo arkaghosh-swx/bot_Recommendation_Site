@@ -10,6 +10,25 @@ const ctx = canvas.getContext("2d");
 let particles = [];
 let rafId;
 
+const supabase = window.supabase.createClient(
+    'https://sbzoxwvuoidtywvkabmz.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiem94d3Z1b2lkdHl3dmthYm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDYzNTAsImV4cCI6MjA5MTcyMjM1MH0.IrfSKiuShXz0RA26fn5NFUS-VLk3mQAwJoSu28prju4'
+);
+
+async function fetchFAQs() {
+    const { data, error } = await supabase
+        .from('faqs')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+
+    if (error) {
+        console.error("FAQ fetch error:", error);
+        return [];
+    }
+    console.log("FAQs:", faqs);
+    return data;
+}
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -208,7 +227,7 @@ async function detectAndRecommend() {
         locationLine.textContent = `📍 ${locStr}`;
 
         // India → WhatsApp; elsewhere → AI
-        currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";  
+        currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";
         // // original
         // currentRecommendedKey = "ai";  
         // // TEMP: force outside-India for testing
@@ -380,6 +399,35 @@ function startRoaming() {
 // Start animation loop immediately
 roamTick();
 
+async function openFAQDrawer() {
+    const drawer = document.getElementById("faqDrawer");
+    const list = document.getElementById("faqList");
+
+    drawer.classList.add("open");
+
+    list.innerHTML = "Loading...";
+
+    const faqs = await fetchFAQs();
+
+    list.innerHTML = "";
+
+    faqs.forEach(faq => {
+        const div = document.createElement("div");
+        div.className = "faq-item";
+
+        div.innerHTML = `
+      <div class="faq-q">${faq.question}</div>
+      <div class="faq-a">${faq.answer}</div>
+    `;
+
+        list.appendChild(div);
+    });
+}
+
+function closeFAQ() {
+    document.getElementById("faqDrawer").classList.remove("open");
+}
+
 /* ══════════════════════════════════════════
    DRAG — mouse + touch
 ══════════════════════════════════════════ */
@@ -475,7 +523,8 @@ const clickLines = [
 ];
 let clickIdx = 0;
 agentBot.addEventListener("click", () => {
-    if (hasMoved) return;   // was a drag, not a click
-    agentSay(clickLines[clickIdx % clickLines.length]);
-    clickIdx++;
+    if (hasMoved) return;
+
+    agentSay("📚 Opening FAQs...");
+    openFAQDrawer();
 });
