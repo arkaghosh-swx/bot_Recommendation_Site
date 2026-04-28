@@ -1,12 +1,9 @@
-const apiKey = process.env.GROQ_API_KEY;
-// const API_KEY = "************************************";
-
-/* assistant.js */
 /* ============================================================
    Solworxs AI Assistant — assistant.js
-   Groq API · Llama 3 · Full-featured
+   Calls /api/chat proxy → GROQ_API_KEY stays secret on server
 ============================================================ */
 
+// ── NO API KEY HERE — lives in .env on your server ────────
 
 const SYSTEM_PROMPT = `You are the Assistant AI  — a sharp, high-performance growth advisor for businesses. You help with:
 - Business growth strategies and go-to-market plans
@@ -55,38 +52,20 @@ const chatShell = document.getElementById("chatShell");
 const drawerHandle = document.getElementById("drawerHandle");
 
 // ── Drawer logic ──────────────────────────────────────────
-function expandDrawer() {
-    drawerExpanded = true;
-    chatShell.classList.add("expanded");
-}
+function expandDrawer() { drawerExpanded = true; chatShell.classList.add("expanded"); }
+function collapseDrawer() { drawerExpanded = false; chatShell.classList.remove("expanded"); }
+function toggleDrawer() { drawerExpanded ? collapseDrawer() : expandDrawer(); }
 
-function collapseDrawer() {
-    drawerExpanded = false;
-    chatShell.classList.remove("expanded");
-}
-
-function toggleDrawer() {
-    if (drawerExpanded) {
-        collapseDrawer();
-    } else {
-        expandDrawer();
-    }
-}
-
-// Click handle to toggle
 drawerHandle.addEventListener("click", toggleDrawer);
 
-// Drag-to-expand on handle
+// Drag-to-expand
 (function initDrag() {
-    let startY = 0;
-    let startH = 0;
-    let dragging = false;
+    let startY = 0, startH = 0, dragging = false;
 
     function onStart(e) {
         dragging = true;
         startY = e.touches ? e.touches[0].clientY : e.clientY;
         startH = chatShell.offsetHeight;
-        // Disable transition during drag for snappy feel
         chatShell.style.transition = "none";
         document.addEventListener("mousemove", onMove);
         document.addEventListener("touchmove", onMove, { passive: false });
@@ -98,7 +77,7 @@ drawerHandle.addEventListener("click", toggleDrawer);
         if (!dragging) return;
         if (e.cancelable) e.preventDefault();
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const delta = startY - clientY; // positive = dragging up
+        const delta = startY - clientY;
         const newH = Math.max(72, Math.min(chatShell.parentElement.offsetHeight, startH + delta));
         chatShell.style.height = newH + "px";
     }
@@ -106,22 +85,13 @@ drawerHandle.addEventListener("click", toggleDrawer);
     function onEnd(e) {
         if (!dragging) return;
         dragging = false;
-        // Restore transition
         chatShell.style.transition = "";
         chatShell.style.height = "";
-
-        // Snap: if dragged more than 80px up from peek, expand; else collapse
         const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
         const delta = startY - clientY;
-        if (delta > 80) {
-            expandDrawer();
-        } else if (delta < -40) {
-            collapseDrawer();
-        } else {
-            // Stay as is
-            if (drawerExpanded) expandDrawer(); else collapseDrawer();
-        }
-
+        if (delta > 80) expandDrawer();
+        else if (delta < -40) collapseDrawer();
+        else { if (drawerExpanded) expandDrawer(); else collapseDrawer(); }
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("touchmove", onMove);
         document.removeEventListener("mouseup", onEnd);
@@ -149,7 +119,7 @@ function autoResize(el) {
     el.style.height = Math.min(el.scrollHeight, 140) + "px";
 }
 
-// ── Markdown render ───────────────────────────────────────
+// ── Markdown ──────────────────────────────────────────────
 function fallbackMarkdown(text) {
     return text
         .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -177,8 +147,6 @@ function renderMarkdown(text) {
 
 // ── Message rendering ─────────────────────────────────────
 function appendMessage(role, text, animate = true) {
-    const t = now();
-
     const row = document.createElement("div");
     row.className = `msg-row ${role}`;
     if (!animate) { row.style.animation = "none"; row.style.opacity = "1"; }
@@ -192,36 +160,27 @@ function appendMessage(role, text, animate = true) {
 
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";
-
-    if (role === "bot") {
-        bubble.innerHTML = renderMarkdown(text);
-    } else {
-        bubble.textContent = text;
-    }
+    if (role === "bot") bubble.innerHTML = renderMarkdown(text);
+    else bubble.textContent = text;
 
     const meta = document.createElement("div");
     meta.className = "msg-meta";
-    meta.innerHTML = `<span>${t}</span>`;
+    meta.innerHTML = `<span>${now()}</span>`;
 
     if (role === "bot") {
         const copyBtn = document.createElement("button");
         copyBtn.className = "copy-btn";
         copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(text).then(() => showToast("Copied ✓"));
-        };
+        copyBtn.onclick = () => navigator.clipboard.writeText(text).then(() => showToast("Copied ✓"));
         meta.appendChild(copyBtn);
     }
 
     bodyWrap.appendChild(bubble);
     bodyWrap.appendChild(meta);
-
     row.appendChild(av);
     row.appendChild(bodyWrap);
-
     messagesEl.appendChild(row);
     messagesEl.scrollTop = messagesEl.scrollHeight;
-
     return row;
 }
 
@@ -229,16 +188,13 @@ function showTyping() {
     const row = document.createElement("div");
     row.className = "typing-row";
     row.id = "typingRow";
-
     const av = document.createElement("div");
     av.className = "msg-av";
     av.textContent = "AI";
-    av.style.cssText = "background:linear-gradient(135deg,#4d7cff,#9a5cff);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;";
-
+    av.style.cssText = "background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;";
     const bubble = document.createElement("div");
     bubble.className = "typing-bubble";
     bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-
     row.appendChild(av);
     row.appendChild(bubble);
     messagesEl.appendChild(row);
@@ -272,12 +228,7 @@ function showRecos(text) {
 
 // ── Sessions ──────────────────────────────────────────────
 function createSession() {
-    const s = {
-        id: Date.now(),
-        label: "New conversation",
-        history: [],
-        messages: [],
-    };
+    const s = { id: Date.now(), label: "New conversation", history: [], messages: [] };
     sessions.unshift(s);
     activeSession = s;
     conversationHistory = [];
@@ -311,10 +262,7 @@ function renderHistory() {
         renameBtn.onclick = (e) => {
             e.stopPropagation();
             const newName = prompt("Rename conversation:", s.label);
-            if (newName && newName.trim()) {
-                s.label = newName.trim();
-                renderHistory();
-            }
+            if (newName?.trim()) { s.label = newName.trim(); renderHistory(); }
         };
 
         const delBtn = document.createElement("button");
@@ -325,12 +273,8 @@ function renderHistory() {
             e.stopPropagation();
             sessions = sessions.filter(x => x.id !== s.id);
             if (activeSession?.id === s.id) {
-                if (sessions.length) {
-                    loadSession(sessions[0]);
-                } else {
-                    startNewChat();
-                    return;
-                }
+                sessions.length ? loadSession(sessions[0]) : startNewChat();
+                return;
             }
             renderHistory();
         };
@@ -369,25 +313,20 @@ function saveToSession(role, text) {
     }
 }
 
-// ── Groq API ──────────────────────────────────────────────
+// ── API call → /api/chat proxy (key never touches browser) ─
 async function askGroq(prompt) {
     conversationHistory.push({ role: "user", content: prompt });
     if (activeSession) activeSession.history = [...conversationHistory];
 
-    const trimmed = conversationHistory.slice(-20);
-
     try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const response = await fetch("/api/chat", {    // ← YOUR server, not Groq directly
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + process.env.GROQ_API_KEY,
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
                 messages: [
                     { role: "system", content: SYSTEM_PROMPT },
-                    ...trimmed
+                    ...conversationHistory.slice(-20),
                 ],
                 temperature: 0.7,
                 max_tokens: 1024,
@@ -397,7 +336,7 @@ async function askGroq(prompt) {
 
         const data = await response.json();
 
-        if (data.choices && data.choices[0]) {
+        if (data.choices?.[0]) {
             const reply = data.choices[0].message.content;
             conversationHistory.push({ role: "assistant", content: reply });
             if (activeSession) activeSession.history = [...conversationHistory];
@@ -417,94 +356,65 @@ async function askGroq(prompt) {
 async function sendMessage() {
     const text = inputEl.value.trim();
     if (!text) return;
-
     inputEl.value = "";
     inputEl.style.height = "auto";
     sendBtnEl.disabled = true;
     recoBar.style.display = "none";
-
-    // Expand drawer when user sends a message
     expandDrawer();
-
     appendMessage("user", text);
     saveToSession("user", text);
     showTyping();
-
     const reply = await askGroq(text);
     removeTyping();
-
     appendMessage("bot", reply);
     saveToSession("bot", reply);
     showRecos(text);
-
     sendBtnEl.disabled = false;
     inputEl.focus();
 }
 
-// ── Quick ask ─────────────────────────────────────────────
-function quickAsk(text) {
-    inputEl.value = text;
-    sendMessage();
-}
+function quickAsk(text) { inputEl.value = text; sendMessage(); }
 
 // ── New chat ──────────────────────────────────────────────
 function startNewChat() {
     messagesEl.innerHTML = "";
     recoBar.style.display = "none";
     conversationHistory = [];
-
-    // Collapse drawer to show hero again
     collapseDrawer();
-
     createSession();
     addDivider("New conversation · " + new Date().toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }));
-    appendMessage("bot", "Hello 👋 I'm your Assistant AI.\nTell me about your business goals and I'll guide you to the right solution.");
-
+    appendMessage("bot", "Hello 👋 I'm your Swx AI.\nTell me about your business goals and I'll guide you to the right solution.");
     inputEl.focus();
     document.getElementById("sidebar").classList.remove("open");
 }
 
-// ── Export chat ───────────────────────────────────────────
+// ── Export ────────────────────────────────────────────────
 function exportChat() {
-    if (!activeSession || !activeSession.messages.length) {
-        showToast("Nothing to export yet.");
-        return;
-    }
-    const lines = [
-        "Assistant AI Chat Export",
-        "=".repeat(50),
-        `Date: ${new Date().toLocaleString()}`,
-        "",
-    ];
+    if (!activeSession?.messages.length) { showToast("Nothing to export yet."); return; }
+    const lines = ["Swx AI Chat Export", "=".repeat(50), `Date: ${new Date().toLocaleString()}`, ""];
     activeSession.messages.forEach(m => {
-        lines.push(`[${m.time}] ${m.role === "user" ? "You" : "Assistant AI"}:`);
+        lines.push(`[${m.time}] ${m.role === "user" ? "You" : "Swx AI"}:`);
         lines.push(m.text);
         lines.push("");
     });
-    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `assistant-chat-${Date.now()}.txt`;
+    a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/plain" }));
+    a.download = `swx-chat-${Date.now()}.txt`;
     a.click();
     showToast("Chat exported 📄");
 }
 
-// ── In-chat search ────────────────────────────────────────
+// ── Search ────────────────────────────────────────────────
 function toggleChatSearch() {
     const bar = document.getElementById("chatSearchBar");
     const inp = document.getElementById("chatSearchInput");
     bar.classList.toggle("open");
-    if (bar.classList.contains("open")) {
-        inp.focus();
-    } else {
-        inp.value = "";
-        searchChat("");
-    }
+    if (bar.classList.contains("open")) inp.focus();
+    else { inp.value = ""; searchChat(""); }
 }
 
 function searchChat(query) {
-    const bubbles = messagesEl.querySelectorAll(".msg-bubble");
-    bubbles.forEach(b => {
+    messagesEl.querySelectorAll(".msg-bubble").forEach(b => {
         const raw = b.dataset.raw || b.textContent;
         b.dataset.raw = raw;
         if (!query) { b.innerHTML = renderMarkdown(raw); return; }
@@ -513,7 +423,7 @@ function searchChat(query) {
     });
 }
 
-// ── Context menu (attach) ─────────────────────────────────
+// ── Context menu ──────────────────────────────────────────
 function showContextMenu(btn) {
     const menu = document.getElementById("ctxMenu");
     const rect = btn.getBoundingClientRect();
@@ -521,29 +431,19 @@ function showContextMenu(btn) {
     menu.style.top = (rect.top - menu.offsetHeight - 8) + "px";
     menu.classList.toggle("open");
 }
-
-function closeCtx() {
-    document.getElementById("ctxMenu").classList.remove("open");
-}
-
+function closeCtx() { document.getElementById("ctxMenu").classList.remove("open"); }
 document.addEventListener("click", e => {
     const menu = document.getElementById("ctxMenu");
-    if (!menu.contains(e.target) && !e.target.closest(".composer-attach")) {
-        menu.classList.remove("open");
-    }
+    if (!menu.contains(e.target) && !e.target.closest(".composer-attach")) menu.classList.remove("open");
 });
 
-// ── Sidebar (mobile) ──────────────────────────────────────
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("open");
-}
+// ── Sidebar ───────────────────────────────────────────────
+function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); }
 
-// ── Quick Actions Toggle ──────────────────────────────────
+// ── Quick Actions ─────────────────────────────────────────
 function toggleQuickActions() {
-    const section = document.getElementById("quickActionsSection");
-    const container = document.getElementById("quickNavContainer");
-    section.classList.toggle("expanded");
-    container.classList.toggle("show");
+    document.getElementById("quickActionsSection").classList.toggle("expanded");
+    document.getElementById("quickNavContainer").classList.toggle("show");
 }
 
 // ── Keyboard shortcuts ────────────────────────────────────
@@ -553,32 +453,19 @@ document.addEventListener("keydown", e => {
         document.getElementById("chatSearchBar").classList.remove("open");
         collapseDrawer();
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        toggleChatSearch();
-    }
-    if ((e.ctrlKey || e.metaKey) && e.key === "n") {
-        e.preventDefault();
-        startNewChat();
-    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); toggleChatSearch(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === "n") { e.preventDefault(); startNewChat(); }
 });
 
 inputEl.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
-
-// Also expand drawer when user focuses the input
-inputEl.addEventListener("focus", () => {
-    if (!drawerExpanded) expandDrawer();
-});
+inputEl.addEventListener("focus", () => { if (!drawerExpanded) expandDrawer(); });
 
 // ── Init ──────────────────────────────────────────────────
 (function init() {
     createSession();
     addDivider(new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }));
-    appendMessage("bot", "Hello 👋 I'm your Assistant AI.\nTell me about your business goals and I'll guide you to the right solution.", false);
+    appendMessage("bot", "Hello 👋 I'm your Swx AI.\nTell me about your business goals and I'll guide you to the right solution.", false);
     inputEl.focus();
 })();
