@@ -1,41 +1,80 @@
 
 const GROQ_API_KEY = "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";
+var supabase = window.supabase.createClient(
+    "https://sbzoxwvuoidtywvkabmz.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiem94d3Z1b2lkdHl3dmthYm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDYzNTAsImV4cCI6MjA5MTcyMjM1MH0.IrfSKiuShXz0RA26fn5NFUS-VLk3mQAwJoSu28prju4"
+);
 
+// const GROQ_API_KEY = "*********************************";
+// var supabase = window.supabase.createClient(
+//     "****************************************",
+//     "*****************************************"
+// );
 
 /* assistant.js */
 /* ============================================================
-   Solworxs AI Assistant — assistant.js
+   Warrior Homoeopath AI Assistant — assistant.js
    Groq API · Llama 3 · Full-featured
 ============================================================ */
 
+const SYSTEM_PROMPT = `
+You are Sol — an intelligent assistant for Warrior Homoeopath.
 
-const SYSTEM_PROMPT = `You are the Assistant AI  — a sharp, high-performance growth advisor for businesses. You help with:
-- Business growth strategies and go-to-market plans
-- Pricing, plans, and ROI analysis
-- Lead generation and marketing automation
-- Booking product demos
-- Capturing lead/contact details
-- Explaining Assistant services
+Your role:
+- Help users understand services, consultations, and treatments
+- Answer FAQs clearly and concisely
+- Guide users to book a consultation
+- Build trust (medical, calm, professional tone)
 
-Be concise, confident, and professional. Use markdown formatting — headers, bullet lists, bold text, tables — where it adds clarity. Never be vague. When a user wants to book a demo or share contact info, collect: Name, Email, Company, and their main goal.`;
+Rules:
+- Always answer based on provided FAQ data if available
+- Do NOT act like a generic chatbot
+- Do NOT give medical diagnosis
+- Keep answers short, clear, and reassuring
+- If unsure → guide user to consultation
+
+Tone:
+- Calm, professional, human-like
+- No hype, no marketing jargon
+
+Goal:
+Help the user understand and move toward booking a consultation.
+
+If a question matches an FAQ → answer using that FAQ.
+If not → answer briefly and suggest consultation.
+`;
 
 // ── Recommendations map ───────────────────────────────────
 const RECO_MAP = {
-    pricing: ["Compare all plans", "What's included in Pro?", "Do you offer a free trial?"],
-    growth: ["Suggest a 90-day plan", "What's your biggest case study?", "How fast can I see ROI?"],
-    demo: ["What happens after I book?", "Who will I speak with?", "Can I see a live dashboard?"],
-    leads: ["How does lead scoring work?", "Integrate with my CRM?", "Show an automation example"],
-    automation: ["What can you automate?", "Connect to Zapier?", "Email automation examples"],
-    default: ["How can you help my business?", "What does Assistant do?", "Tell me about pricing"],
+    consultation: [
+        "How are consultations conducted?",
+        "Is consultation private?",
+        "How do I book a consultation?"
+    ],
+    treatment: [
+        "What conditions do you treat?",
+        "How long does treatment take?",
+        "Is treatment personalised?"
+    ],
+    safety: [
+        "Is homoeopathy safe?",
+        "Can children take treatment?",
+        "Any side effects?"
+    ],
+    default: [
+        "What is Warrior Homoeopath?",
+        "How does it work?",
+        "How do I get started?"
+    ]
 };
 
 function getRecos(text) {
     const t = text.toLowerCase();
-    if (t.includes("pric") || t.includes("cost") || t.includes("plan")) return RECO_MAP.pricing;
-    if (t.includes("grow") || t.includes("scale") || t.includes("revenue")) return RECO_MAP.growth;
-    if (t.includes("demo") || t.includes("book") || t.includes("schedule")) return RECO_MAP.demo;
-    if (t.includes("lead") || t.includes("contact") || t.includes("capture")) return RECO_MAP.leads;
-    if (t.includes("automat") || t.includes("workflow") || t.includes("zapier")) return RECO_MAP.automation;
+
+    if (t.includes("consult")) return RECO_MAP.consultation;
+    if (t.includes("treat") || t.includes("condition")) return RECO_MAP.treatment;
+    if (t.includes("safe") || t.includes("side")) return RECO_MAP.safety;
+
     return RECO_MAP.default;
 }
 
@@ -134,6 +173,31 @@ drawerHandle.addEventListener("click", toggleDrawer);
 })();
 
 // ── Helpers ───────────────────────────────────────────────
+async function getFAQContext() {
+    const { data } = await supabase
+        .from("faqs")
+        .select("question, answer")
+        .order("sort_order", { ascending: true });
+
+    if (!data) return "";
+
+    return data.map(f => `Q: ${f.question}\nA: ${f.answer}`).join("\n\n");
+}
+
+function checkFAQFirst(userText, faqs) {
+    if (!faqs || !faqs.length) return null;
+
+    const input = userText.toLowerCase();
+
+    return faqs.find(f => {
+        const q = f.question.toLowerCase();
+
+        // keyword-based matching
+        const words = input.split(" ");
+        return words.some(w => w.length > 3 && q.includes(w));
+    }) || null;
+}
+
 function now() {
     return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
@@ -371,7 +435,7 @@ function saveToSession(role, text) {
 }
 
 // ── Groq API ──────────────────────────────────────────────
-async function askGroq(prompt) {
+async function askGroq(prompt, faqContext) {
     conversationHistory.push({ role: "user", content: prompt });
     if (activeSession) activeSession.history = [...conversationHistory];
 
@@ -387,7 +451,10 @@ async function askGroq(prompt) {
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
                 messages: [
-                    { role: "system", content: SYSTEM_PROMPT },
+                    {
+                        role: "system",
+                        content: SYSTEM_PROMPT + "\n\nFAQs:\n" + faqContext
+                    },
                     ...trimmed
                 ],
                 temperature: 0.7,
@@ -412,6 +479,13 @@ async function askGroq(prompt) {
         console.error(err);
         return "⚠️ Connection failed. Please check your network and try again.";
     }
+
+    let reply = data.choices[0].message.content;
+
+    // Add CTA if relevant
+    if (prompt.toLowerCase().includes("consult")) {
+        reply += "\n\n👉 You can book a consultation directly from our website.";
+    }
 }
 
 // ── Send ──────────────────────────────────────────────────
@@ -431,7 +505,30 @@ async function sendMessage() {
     saveToSession("user", text);
     showTyping();
 
-    const reply = await askGroq(text);
+    // Fetch FAQs once
+    const { data: faqs, error } = await supabase
+        .from("faqs")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+    if (error) {
+        console.error("FAQ fetch error:", error);
+    }
+
+    const faqContext = faqs
+        ? faqs.map(f => `Q: ${f.question}\nA: ${f.answer}`).join("\n\n")
+        : "";
+
+    // Check for direct FAQ match
+    const matchedFAQ = checkFAQFirst(text, faqs);
+
+    let reply;
+
+    if (matchedFAQ) {
+        reply = matchedFAQ.answer;   // ✅ instant answer (no API call)
+    } else {
+        reply = await askGroq(text, faqContext); // 🤖 fallback to AI
+    }
     removeTyping();
 
     appendMessage("bot", reply);
@@ -459,8 +556,7 @@ function startNewChat() {
 
     createSession();
     addDivider("New conversation · " + new Date().toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }));
-    appendMessage("bot", "Hello 👋 I'm your Assistant AI.\nTell me about your business goals and I'll guide you to the right solution.");
-
+    appendMessage("bot", "Hello 👋 I'm Sol.\nHow can I help you with your health concerns or consultation?");
     inputEl.focus();
     document.getElementById("sidebar").classList.remove("open");
 }
@@ -472,7 +568,7 @@ function exportChat() {
         return;
     }
     const lines = [
-        "Assistant AI Chat Export",
+        "Sol — Warrior Homoeopath Assistant",
         "=".repeat(50),
         `Date: ${new Date().toLocaleString()}`,
         "",
@@ -580,6 +676,6 @@ inputEl.addEventListener("focus", () => {
 (function init() {
     createSession();
     addDivider(new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }));
-    appendMessage("bot", "Hello 👋 I'm your Assistant AI.\nTell me about your business goals and I'll guide you to the right solution.", false);
+    appendMessage("bot", "Hello 👋 I'm Sol.\nHow can I help you with your health concerns or consultation?", false);
     inputEl.focus();
 })();

@@ -7,10 +7,11 @@
     <title>Solworxs — Choose Your AI Bot</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="icon" type="image/png" href="/assets/logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
         rel="stylesheet" />
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -68,7 +69,6 @@
         </div>
 
     </div>
-
 
     <!-- ═══════════════════════════════════════
        FULL-SCREEN RECOMMENDATION MODAL
@@ -233,15 +233,95 @@
         </div>
     </div>
 
-    <div id="faqDrawer" class="faq-drawer">
-        <div class="faq-header">
-            <h3>FAQs</h3>
-            <button onclick="closeFAQ()">✕</button>
-        </div>
-        <div id="faqList"></div>
-    </div>
     <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- ═══════════════════════════════════════
+       FAQ DRAWER
+  ═══════════════════════════════════════ -->
+
+    <!-- Overlay -->
+    <div class="faq-overlay" id="faqOverlay" onclick="closeFaqDrawer()"></div>
+
+    <!-- Side Drawer -->
+    <div class="faq-drawer" id="faqDrawer">
+
+        <div class="faq-drawer-header">
+            <div class="faq-header-left">
+                <div class="faq-sol-mini">
+                    <div class="fsol-antenna"></div>
+                    <div class="fsol-eyes">
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="fsol-mouth"></div>
+                </div>
+                <div class="faq-header-text">
+                    <h2>FAQs</h2>
+                    <p>💡 Click me anytime to reopen FAQs.</p>
+                </div>
+            </div>
+            <button class="faq-close-btn" onclick="closeFaqDrawer()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="faq-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="faqSearchInput" placeholder="Search questions…" oninput="searchFaqs(this.value)" />
+            <button class="faq-search-clear" id="faqSearchClear" onclick="clearFaqSearch()" style="display:none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="faq-category-tabs" id="faqCategoryTabs"></div>
+
+        <div class="faq-loading" id="faqLoading">
+            <div class="faq-skeleton"></div>
+            <div class="faq-skeleton"></div>
+            <div class="faq-skeleton"></div>
+            <div class="faq-loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p>Sol is fetching your answers…</p>
+        </div>
+
+        <div class="faq-error" id="faqError" style="display:none">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>Couldn't load FAQs right now.</p>
+            <button onclick="loadFaqs()">Try again</button>
+        </div>
+
+        <div class="faq-content" id="faqContent" style="display:none"></div>
+
+        <div class="faq-empty" id="faqEmpty" style="display:none">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <p>No results for "<span id="faqEmptyQuery"></span>"</p>
+            <small>Try different keywords</small>
+        </div>
+
+        <div class="faq-drawer-footer">
+            <p>Still have questions?</p>
+            <a href="#contact" class="faq-footer-btn" onclick="closeFaqDrawer()">
+                <i class="fa-solid fa-comments"></i> Talk to us
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Sol hint bubble -->
+    <div class="sol-faq-hint" id="solFaqHint">
+        <span>Click me for FAQs! 👆</span>
+        <div class="hint-tail"></div>
+    </div>
+
+    <!-- FAQ styles + logic -->
+    <link rel="stylesheet" href="faq.css">
+    <script src="faq.js"></script>
+
 </body>
 
 </html>

@@ -1,6 +1,9 @@
+// currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";
+
 /* ─────────────────────────────────────────
    SOLWORXS · BOT CHOOSER · SCRIPT.JS
 ───────────────────────────────────────── */
+
 /* ══════════════════════════════════════════
    CANVAS PARTICLES (inside modal)
 ══════════════════════════════════════════ */
@@ -9,25 +12,6 @@ const ctx = canvas.getContext("2d");
 let particles = [];
 let rafId;
 
-const supabase = window.supabase.createClient(
-    'https://sbzoxwvuoidtywvkabmz.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiem94d3Z1b2lkdHl3dmthYm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDYzNTAsImV4cCI6MjA5MTcyMjM1MH0.IrfSKiuShXz0RA26fn5NFUS-VLk3mQAwJoSu28prju4'
-);
-
-async function fetchFAQs() {
-    const { data, error } = await supabase
-        .from('faqs')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_index', { ascending: true });
-
-    if (error) {
-        console.error("FAQ fetch error:", error);
-        return [];
-    }
-    console.log("FAQs:", faqs);
-    return data;
-}
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -227,9 +211,9 @@ async function detectAndRecommend() {
 
         // India → WhatsApp; elsewhere → AI
         currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";
-        // // original
-        // currentRecommendedKey = "ai";  
-        // // TEMP: force outside-India for testing
+        // original
+        // currentRecommendedKey = "ai"; 
+        // TEMP: force outside-India for testing
 
         populateModal(currentRecommendedKey, `📍 ${locStr}`);
 
@@ -290,11 +274,22 @@ consentLearnMore.addEventListener("click", (e) => {
 });
 
 // ACCEPT → store consent, run geo, close banner
+// ACCEPT → store consent, run geo, open FAQ first
 consentAccept.addEventListener("click", () => {
     localStorage.setItem(CONSENT_KEY, "accepted");
     hideConsent();
-    agentSay("✅ Thanks! Detecting your region…");
+    agentSay("✅ Thanks! Let me show you our FAQs first…");
+    // Geo runs silently and populates the modal in background
     detectAndRecommend();
+    // Flag so closeFaqDrawer knows this is the first-time onboarding close
+    sessionStorage.setItem("solworxs_show_modal_after_faq", "true");
+    // Open FAQ after banner slides out
+    setTimeout(() => {
+        if (typeof openFaqDrawer === "function") {
+            openFaqDrawer();
+            localStorage.setItem("solworxs_faq_seen", "true");
+        }
+    }, 600);
 });
 
 // DECLINE → no geo fetch, use default AI recommendation
@@ -329,12 +324,16 @@ initConsent();
 ══════════════════════════════════════════ */
 const agentLines = [
     "👋 Hey! I'm Sol, your AI guide!",
+    "👆 Click me to open FAQs!",
     "🤖 Not sure which bot to pick?",
-    "📍 I detected your location!",       // overwritten after geo
+    "📍 I detected your location!",
+    "👆 Click me to open FAQs!",     // overwritten after geo
     "🚀 Both bots are live & ready!",
     "✨ Tap a card to get started!",
+    "👆 Click me to open FAQs!",
     "📊 10M+ conversations handled!",
     "⚡ 99.9% uptime. Zero downtime.",
+    "👆 Click me to open FAQs!",
     "🌟 I'll help you choose the right one!",
     "💬 Click me if you need a hint!",
 ];
@@ -397,35 +396,6 @@ function startRoaming() {
 
 // Start animation loop immediately
 roamTick();
-
-async function openFAQDrawer() {
-    const drawer = document.getElementById("faqDrawer");
-    const list = document.getElementById("faqList");
-
-    drawer.classList.add("open");
-
-    list.innerHTML = "Loading...";
-
-    const faqs = await fetchFAQs();
-
-    list.innerHTML = "";
-
-    faqs.forEach(faq => {
-        const div = document.createElement("div");
-        div.className = "faq-item";
-
-        div.innerHTML = `
-      <div class="faq-q">${faq.question}</div>
-      <div class="faq-a">${faq.answer}</div>
-    `;
-
-        list.appendChild(div);
-    });
-}
-
-function closeFAQ() {
-    document.getElementById("faqDrawer").classList.remove("open");
-}
 
 /* ══════════════════════════════════════════
    DRAG — mouse + touch
@@ -511,19 +481,13 @@ agentBot.addEventListener("touchstart", onDragStart, { passive: false });
 document.addEventListener("touchmove", onDragMove, { passive: false });
 document.addEventListener("touchend", onDragEnd);
 
-// ── Click Sol for a line (only if not dragged) ──
-const clickLines = [
-    "😄 I'm Sol — pick a bot!",
-    "📱 WhatsApp Bot = conversational!",
-    "🧠 AI Bot = deep automation!",
-    "🎯 Both bots have 24/7 support!",
-    "🔥 Tap the card to explore!",
-    "🖱️ You can drag me anywhere!",
-];
+// ── Click Sol → open FAQ drawer (only if not dragged) ──
 let clickIdx = 0;
 agentBot.addEventListener("click", () => {
-    if (hasMoved) return;
-
+    if (hasMoved) return;   // was a drag, not a click
     agentSay("📚 Opening FAQs...");
-    openFAQDrawer();
+    // openFaqDrawer is defined in faq.js — called after page is visible
+    if (typeof openFaqDrawer === "function") {
+        openFaqDrawer();
+    }
 });

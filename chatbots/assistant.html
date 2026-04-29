@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/assets/logo.png">
-    <title>Swx AI — Growth Assistant</title>
+    <title>Sol — Warrior Homoeopath Assistant</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
         rel="stylesheet">
@@ -37,12 +37,12 @@
                 <!-- Brand -->
                 <div class="brand">
                     <div class="brand-mark">
-                        <img src="/assets/logo.png" alt="Solworxs Logo">
+                        <img src="/assets/logo.png" alt="Warrior Logo">
                         <div class="brand-glow"></div>
                     </div>
                     <div class="brand-text">
-                        <h2>Swx <span class="brand-ai">AI</span></h2>
-                        <p>The Growth Assistant</p>
+                        <h2>Sol</h2>
+                        <p>Your Health Assistant</p>
                     </div>
                 </div>
 
@@ -51,12 +51,6 @@
                     <i class="fa-solid fa-plus"></i>
                     <span>New Conversation</span>
                 </button>
-
-                <!-- Live badge -->
-                <div class="sidebar-live-pill">
-                    <span class="live-dot"></span>
-                    <span>2 Bots Live · 99.9% Uptime</span>
-                </div>
 
                 <!-- History -->
                 <div class="history-list" id="historyList">
@@ -73,32 +67,25 @@
                         <span class="quick-actions-label">Quick Actions</span>
                         <i class="fa-solid fa-chevron-down toggle-icon"></i>
                     </button>
-                    <nav class="quick-nav" id="quickNavContainer">
-                        <button class="nav-item" onclick="quickAsk('How can Assistant help my business grow?')">
-                            <div class="nav-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                            <span>How can you help?</span>
-                        </button>
-                        <button class="nav-item" onclick="quickAsk('What services does Assistant provide?')">
-                            <div class="nav-icon"><i class="fa-solid fa-layer-group"></i></div>
-                            <span>Services Overview</span>
-                        </button>
-                        <button class="nav-item" onclick="quickAsk('Explain Assistant pricing plans in detail')">
-                            <div class="nav-icon"><i class="fa-solid fa-tags"></i></div>
-                            <span>Pricing Plans</span>
-                        </button>
-                        <button class="nav-item" onclick="quickAsk('I want to book a product demo')">
-                            <div class="nav-icon"><i class="fa-solid fa-video"></i></div>
-                            <span>Book a Demo</span>
-                        </button>
-                        <button class="nav-item" onclick="quickAsk('Tell me about lead generation automation')">
-                            <div class="nav-icon"><i class="fa-solid fa-bolt"></i></div>
-                            <span>Lead Automation</span>
-                        </button>
-                        <button class="nav-item" onclick="quickAsk('I want to submit my business contact details')">
-                            <div class="nav-icon"><i class="fa-solid fa-user-plus"></i></div>
-                            <span>Get in Touch</span>
-                        </button>
-                    </nav>
+                    <button class="nav-item" onclick="quickAsk('What is Warrior Homoeopath?')">
+                        <span>About us</span>
+                    </button>
+
+                    <button class="nav-item" onclick="quickAsk('How are consultations conducted?')">
+                        <span>Consultation</span>
+                    </button>
+
+                    <button class="nav-item" onclick="quickAsk('What conditions do you treat?')">
+                        <span>Conditions</span>
+                    </button>
+
+                    <button class="nav-item" onclick="quickAsk('Is homoeopathy safe?')">
+                        <span>Safety</span>
+                    </button>
+
+                    <button class="nav-item" onclick="quickAsk('How do I book a consultation?')">
+                        <span>Book consultation</span>
+                    </button>
                 </div>
 
                 <a href="../index.html" class="back-link">
@@ -121,7 +108,7 @@
                 </button>
                 <div class="topbar-brand">
                     <div class="brand-mark sm"><span>S</span></div>
-                    <span>Solworxs AI</span>
+                    <span>Sol AI</span>
                 </div>
                 <button class="topbar-btn" onclick="startNewChat()">
                     <i class="fa-solid fa-plus"></i>
@@ -143,29 +130,30 @@
                     </div>
 
                     <h1 class="hero-heading">
-                        Turn conversations into<br>
-                        <em>revenue</em>.
+                        Understand your<br>
+                        <em>health</em> better.
                     </h1>
 
                     <p class="hero-sub">
-                        Ask about growth strategies, automation, lead generation, pricing,
-                        or book a live demo — all in one place.
+                        Ask about treatments, consultations, and how homoeopathy can help you.
                     </p>
 
                     <div class="stats-strip">
                         <div class="stat">
-                            <strong>10×</strong>
-                            <span>Faster lead response</span>
+                            <strong>1 &colon; 1</strong>
+                            <span>
+                                Personalised care
+                            </span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat">
-                            <strong>3.8×</strong>
-                            <span>Avg. conversion lift</span>
+                            <strong>100%</strong>
+                            <span>Private consultations</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat">
                             <strong>24/7</strong>
-                            <span>Always available</span>
+                            <span>Always available guidance</span>
                         </div>
                     </div>
                 </section>
@@ -173,42 +161,37 @@
                 <!-- SUGGESTION CARDS -->
                 <section class="suggestion-cards" id="suggCards">
 
-                    <button class="scard" onclick="quickAsk('How can Assistant help scale my startup?')">
-                        <div class="scard-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <button class="scard" onclick="quickAsk('What is Warrior Homoeopath?')">
+                        <div class="scard-icon"><i class="fa-solid fa-user-doctor"></i></div>
                         <div class="scard-text">
-                            <strong>Scale my startup</strong>
-                            <p>Get a tailored growth roadmap</p>
+                            <strong>About us</strong>
+                            <p>Understand our approach</p>
                         </div>
-                        <i class="fa-solid fa-arrow-right scard-arrow"></i>
                     </button>
 
-                    <button class="scard" onclick="quickAsk('What does Assistant charge?')">
-                        <div class="scard-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <button class="scard" onclick="quickAsk('How are consultations conducted?')">
+                        <div class="scard-icon"><i class="fa-solid fa-video"></i></div>
                         <div class="scard-text">
-                            <strong>See pricing</strong>
-                            <p>Transparent, flexible plans</p>
+                            <strong>Consultation process</strong>
+                            <p>How online consultation works</p>
                         </div>
-                        <i class="fa-solid fa-arrow-right scard-arrow"></i>
                     </button>
 
-                    <button class="scard" onclick="quickAsk('How does your lead generation automation work?')">
-                        <div class="scard-icon"><i class="fa-solid fa-magnet"></i></div>
+                    <button class="scard" onclick="quickAsk('What conditions do you treat?')">
+                        <div class="scard-icon"><i class="fa-solid fa-heart-pulse"></i></div>
                         <div class="scard-text">
-                            <strong>Lead generation</strong>
-                            <p>Automate your top of funnel</p>
+                            <strong>Conditions treated</strong>
+                            <p>Chronic & complex cases</p>
                         </div>
-                        <i class="fa-solid fa-arrow-right scard-arrow"></i>
                     </button>
 
-                    <button class="scard" onclick="quickAsk('I want to schedule a demo with your team')">
+                    <button class="scard" onclick="quickAsk('How do I book a consultation?')">
                         <div class="scard-icon"><i class="fa-solid fa-calendar-check"></i></div>
                         <div class="scard-text">
-                            <strong>Book a demo</strong>
-                            <p>See results in 30 minutes</p>
+                            <strong>Book consultation</strong>
+                            <p>Start your treatment journey</p>
                         </div>
-                        <i class="fa-solid fa-arrow-right scard-arrow"></i>
                     </button>
-
                 </section>
 
             </div><!-- /main-scroll -->
@@ -223,7 +206,7 @@
                     <div class="handle-bar"></div>
                     <span class="handle-label">
                         <i class="fa-solid fa-robot"></i>
-                        Chat with Swx AI
+                        Chat with Sol AI
                     </span>
                 </div>
 
@@ -231,7 +214,8 @@
                 <div class="chat-topbar">
                     <div class="chat-topbar-left">
                         <div class="chat-status-dot"></div>
-                        <span>Hello 👋 I'm your <strong>Swx AI</strong>. Tell me your business goals.</span>
+                        <span>Hello 👋 I'm your <strong>Sol AI</strong>. How can I help you with your health concerns
+                            today?</span>
                     </div>
                     <div class="chat-actions">
                         <button class="chat-act-btn" title="Search" onclick="toggleChatSearch()">
@@ -263,8 +247,8 @@
                 <!-- Composer -->
                 <div class="composer">
                     <div class="composer-inner">
-                        <textarea id="userInput" placeholder="Ask about growth, pricing, automation…" rows="1"
-                            oninput="autoResize(this)"></textarea>
+                        <textarea id="userInput" placeholder="Ask about treatment, consultation, or your condition…"
+                            rows="1" oninput="autoResize(this)"></textarea>
                         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -295,7 +279,7 @@
     </div>
 
     <div class="toast" id="toast"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="assistant.js"></script>
 </body>
 
