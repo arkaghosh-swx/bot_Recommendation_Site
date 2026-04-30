@@ -1,5 +1,6 @@
-// lib/core/constants/app_constants.dart
+// static const String groqApiKey = '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';
 
+// lib/core/constants/app_constants.dart
 class AppConstants {
   // ── Groq API ────────────────────────────────────────────
   static const String groqApiKey = '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';
@@ -8,8 +9,8 @@ class AppConstants {
   static const String groqModel = 'llama-3.1-8b-instant';
 
   // ── Supabase ─────────────────────────────────────────────
-  static const String supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
-  static const String supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
+  static const String supabaseUrl = 'https://sbzoxwvuoidtywvkabmz.supabase.co/rest/v1/';
+  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiem94d3Z1b2lkdHl3dmthYm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDYzNTAsImV4cCI6MjA5MTcyMjM1MH0.IrfSKiuShXz0RA26fn5NFUS-VLk3mQAwJoSu28prju4';
 
   // ── App Info ─────────────────────────────────────────────
   static const String appName = 'Sol AI';

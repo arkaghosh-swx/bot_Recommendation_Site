@@ -1,3 +1,4 @@
+// /home/solworxs11/Public/botRecommendationSite/sol_bot/lib/screens/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
