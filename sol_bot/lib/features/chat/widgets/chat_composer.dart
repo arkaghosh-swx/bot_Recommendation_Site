@@ -128,38 +128,6 @@ class _ChatComposerState extends State<ChatComposer> {
                 ],
               ),
             ),
-
-            // Keyboard hint (desktop only)
-            if (MediaQuery.of(context).size.width > 600) ...[
-              const SizedBox(height: 7),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(fontSize: 11, color: AppColors.text2),
-                  children: [
-                    TextSpan(
-                      text: 'Enter',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: AppColors.text2,
-                        backgroundColor: AppColors.surface3,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                    TextSpan(text: '  to send  ·  '),
-                    TextSpan(
-                      text: 'Shift+Enter',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: AppColors.text2,
-                        backgroundColor: AppColors.surface3,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                    TextSpan(text: '  new line'),
-                  ],
-                ),
-              ),
-            ],
           ],
         ),
       ),

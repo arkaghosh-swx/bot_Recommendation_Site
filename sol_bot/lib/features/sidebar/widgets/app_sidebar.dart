@@ -104,19 +104,8 @@ class _AppSidebarState extends State<AppSidebar> {
                       },
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.arrow_back,
-                            size: 14,
-                            color: AppColors.text2,
-                          ),
+                          
                           const SizedBox(width: 8),
-                          Text(
-                            'Back to Website',
-                            style: const TextStyle(
-                              fontSize: 12.5,
-                              color: AppColors.text2,
-                            ),
-                          ),
                         ],
                       ),
                     ),
