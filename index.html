@@ -108,10 +108,6 @@
                     <span id="modalCTAText">Get Started</span>
                     <div class="btn-shine"></div>
                 </a>
-                <button class="btn-modal-no" id="modalDecline">
-                    Not for me &mdash; show me all options
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
             </div>
 
         </div>
@@ -228,7 +224,7 @@
             </div>
         </div>
         <div class="agent-bubble" id="agentBubble">
-            <p id="agentMsg">👋 Hey! I'm Sol!</p>
+            <p id="agentMsg">👋 Hey! I'm Swx!</p>
             <div class="bubble-tail"></div>
         </div>
     </div>
@@ -245,28 +241,29 @@
     <!-- Side Drawer -->
     <div class="faq-drawer" id="faqDrawer">
 
-        <div class="faq-drawer-header">
-            <div class="faq-header-left">
-                <div class="faq-sol-mini">
-                    <div class="fsol-antenna"></div>
-                    <div class="fsol-eyes">
-                        <div class="eye">
-                            <div class="pupil"></div>
-                        </div>
-                        <div class="eye">
-                            <div class="pupil"></div>
-                        </div>
-                    </div>
-                    <div class="fsol-mouth"></div>
-                </div>
-                <div class="faq-header-text">
-                    <h2>FAQs</h2>
-                    <p>💡 Click me anytime to reopen FAQs.</p>
-                </div>
+        <div class="faq-drawer-footer">
+
+            <div class="faq-footer-text">
+                <h4>Ready to continue?</h4>
+                <p>
+                    Keep exploring FAQs or start interacting with your recommended bot.
+                </p>
             </div>
-            <button class="faq-close-btn" onclick="closeFaqDrawer()" aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+
+            <div class="faq-footer-actions">
+
+                <button class="faq-primary-btn" onclick="startRecommendedBot()">
+                    <i class="fa-solid fa-rocket"></i>
+                    Start Consulting
+                </button>
+
+                <button class="faq-secondary-btn" onclick="keepReadingFaqs()">
+                    <i class="fa-solid fa-book-open"></i>
+                    Continue FAQs
+                </button>
+
+            </div>
+
         </div>
 
         <div class="faq-search-wrap">
@@ -303,13 +300,30 @@
             <small>Try different keywords</small>
         </div>
 
-        <div class="faq-drawer-footer">
-            <p>Still have questions?</p>
-            <a href="#contact" class="faq-footer-btn" onclick="closeFaqDrawer()">
-                <i class="fa-solid fa-comments"></i> Talk to us
-            </a>
-        </div>
 
+        <div class="faq-drawer-header">
+            <div class="faq-header-left">
+                <div class="faq-sol-mini">
+                    <div class="fsol-antenna"></div>
+                    <div class="fsol-eyes">
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="fsol-mouth"></div>
+                </div>
+                <div class="faq-header-text">
+                    <h2>FAQs</h2>
+                    <p>💡 Click me anytime to reopen FAQs.</p>
+                </div>
+            </div>
+            <button class="faq-close-btn" onclick="closeFaqDrawer()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Sol hint bubble -->

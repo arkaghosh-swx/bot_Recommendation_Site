@@ -585,13 +585,87 @@
    FOOTER
 ══════════════════════════════════════════ */
 .faq-drawer-footer {
-    padding: 14px 18px;
+    padding: 20px 18px;
     border-top: 1px solid rgba(255, 255, 255, .07);
+    background:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, .02),
+            rgba(59, 130, 246, .04));
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.faq-footer-text h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #e8eaf0;
+    margin-bottom: 6px;
+}
+
+.faq-footer-text p {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #64748b;
+}
+
+.faq-footer-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.faq-secondary-btn,
+.faq-primary-btn {
+    flex: 1;
+    height: 46px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, .02);
+    justify-content: center;
+    gap: 8px;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        transform .18s,
+        filter .2s,
+        border-color .2s;
+}
+
+.faq-secondary-btn {
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid rgba(255, 255, 255, .08);
+    color: #cbd5e1;
+}
+
+.faq-secondary-btn:hover {
+    border-color: rgba(59, 130, 246, .35);
+    color: #3b82f6;
+}
+
+.faq-primary-btn {
+    background:
+        linear-gradient(135deg,
+            #2563eb,
+            #3b82f6);
+
+    color: white;
+
+    box-shadow:
+        0 8px 24px rgba(59, 130, 246, .28);
+}
+
+.faq-primary-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
 }
 
 .faq-drawer-footer p {

@@ -180,10 +180,10 @@ function closeModal(recommendedKey) {
 }
 
 /* ── "Not for me" ── */
-modalDecline.addEventListener("click", () => {
-    agentSay("🤔 No worries! Pick from both!");
-    closeModal(currentRecommendedKey);
-});
+// modalDecline.addEventListener("click", () => {
+//     agentSay("🤔 No worries! Pick from both!");
+//     closeModal(currentRecommendedKey);
+// });
 
 /* ── User clicks CTA (accept) ── */
 modalCTA.addEventListener("click", () => {
@@ -199,34 +199,45 @@ let currentRecommendedKey = "ai";   // default
 
 async function detectAndRecommend() {
     try {
-        const res = await fetch("https://api.db-ip.com/v2/free/self");
+        const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
 
-        const country = (data.countryCode || "").toUpperCase();
-        const countryName = data.countryName || "your region";
+        const country = (data.country_code || "").toUpperCase();
+        const countryName = data.country_name || "your region";
         const city = data.city || "";
-        const locStr = city ? `${city}, ${countryName}` : countryName;
+
+        const locStr = city
+            ? `${city}, ${countryName}`
+            : countryName;
 
         locationLine.textContent = `📍 ${locStr}`;
 
-        // India → WhatsApp; elsewhere → AI
-        currentRecommendedKey = country === "IN" ? "whatsapp" : "ai";
-        // original
-        // currentRecommendedKey = "ai"; 
-        // TEMP: force outside-India for testing
+        // India → WhatsApp
+        // Others → AI
+        currentRecommendedKey =
+            country === "IN" ? "whatsapp" : "ai";
 
         populateModal(currentRecommendedKey, `📍 ${locStr}`);
 
-        // Update agent quip
-        agentLines[2] = BOT_DATA[currentRecommendedKey].agentQuip;
+        // Update Sol message
+        agentLines[2] =
+            BOT_DATA[currentRecommendedKey].agentQuip;
 
     } catch (err) {
         console.warn("Geo failed:", err);
-        locationLine.textContent = "📍 Region detection unavailable";
-        populateModal("ai", "📍 Global");
+
+        // fallback → WhatsApp for safety
+        currentRecommendedKey = "whatsapp";
+
+        locationLine.textContent =
+            "📍 Region detection unavailable";
+
+        populateModal(
+            currentRecommendedKey,
+            "📍 India"
+        );
     }
 }
-
 /* ══════════════════════════════════════════
    CONSENT BANNER — gates geo fetch
 ══════════════════════════════════════════ */

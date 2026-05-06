@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/assets/logo.png">
-    <title>Sol — Warrior Homoeopath Assistant</title>
+    <title>Swx Bot — Support Assistant</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
         rel="stylesheet">
@@ -16,37 +15,33 @@
 
 <body>
 
-    <!-- Background layers -->
+    <!-- Background -->
     <div class="bg-grid"></div>
-    <div class="bg-glow gl-blue"></div>
-    <div class="bg-glow gl-green"></div>
+    <div class="bg-glow gl-1"></div>
+    <div class="bg-glow gl-2"></div>
 
     <div class="app">
 
-        <!-- ══════════════════════════════════════
-         SIDEBAR
-    ══════════════════════════════════════ -->
+        <!-- ══════════════ SIDEBAR ══════════════ -->
         <aside class="sidebar" id="sidebar">
-
             <div class="sidebar-inner">
 
-                <button class="mobile-close-nav" onclick="toggleSidebar()">
+                <button class="mobile-close" onclick="closeSidebar()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
 
                 <!-- Brand -->
                 <div class="brand">
                     <div class="brand-mark">
-                        <img src="/assets/logo.png" alt="Warrior Logo">
-                        <div class="brand-glow"></div>
+                        <span>S</span>
                     </div>
                     <div class="brand-text">
-                        <h2>Sol</h2>
-                        <p>Your Health Assistant</p>
+                        <h2>Swx Bot</h2>
+                        <p>Your Support Assistant</p>
                     </div>
                 </div>
 
-                <!-- New chat -->
+                <!-- New Chat -->
                 <button class="new-chat-btn" onclick="startNewChat()">
                     <i class="fa-solid fa-plus"></i>
                     <span>New Conversation</span>
@@ -57,115 +52,102 @@
                     <p class="history-empty">No conversations yet</p>
                 </div>
 
-            </div><!-- /sidebar-inner -->
+            </div>
 
+            <!-- Sidebar Footer -->
             <div class="sidebar-foot">
-
-                <!-- Quick actions -->
-                <div class="quick-actions-section" id="quickActionsSection">
-                    <button class="quick-actions-toggle" id="quickActionsToggle" onclick="toggleQuickActions()">
-                        <span class="quick-actions-label">Quick Actions</span>
-                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                <!-- Quick Actions -->
+                <div class="quick-actions-wrap">
+                    <button class="qa-toggle" onclick="toggleQuickActions()">
+                        <span>QUICK ACTIONS</span>
+                        <i class="fa-solid fa-chevron-down qa-icon" id="qaIcon"></i>
                     </button>
-                    <button class="nav-item" onclick="quickAsk('What is Warrior Homoeopath?')">
-                        <span>About us</span>
-                    </button>
-
-                    <button class="nav-item" onclick="quickAsk('How are consultations conducted?')">
-                        <span>Consultation</span>
-                    </button>
-
-                    <button class="nav-item" onclick="quickAsk('What conditions do you treat?')">
-                        <span>Conditions</span>
-                    </button>
-
-                    <button class="nav-item" onclick="quickAsk('Is homoeopathy safe?')">
-                        <span>Safety</span>
-                    </button>
-
-                    <button class="nav-item" onclick="quickAsk('How do I book a consultation?')">
-                        <span>Book consultation</span>
-                    </button>
+                    <div class="qa-items" id="qaItems">
+                        <button class="nav-item" onclick="quickAsk('What is Swx Bot?')">About us</button>
+                        <button class="nav-item"
+                            onclick="quickAsk('How are consultations conducted?')">Consultation</button>
+                        <button class="nav-item" onclick="quickAsk('What conditions do you treat?')">Conditions</button>
+                        <button class="nav-item" onclick="quickAsk('Is homoeopathy safe?')">Safety</button>
+                        <button class="nav-item" onclick="quickAsk('How do I book a consultation?')">Book
+                            consultation</button>
+                    </div>
                 </div>
 
-
-            </div><!-- /sidebar-foot -->
-
+                <!-- Help & Settings -->
+                <div class="foot-btns">
+                    <button class="foot-btn" onclick="openHelp()">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span>Help</span>
+                    </button>
+                    <button class="foot-btn" onclick="openSettings()">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </button>
+                </div>
+                <a class="back-link" href="https://warriorhomeopath.com/" target="_self">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back to Website
+</a>
+            </div>
         </aside>
 
-        <!-- ══════════════════════════════════════
-         MAIN
-    ══════════════════════════════════════ -->
+        <!-- ══════════════ MAIN ══════════════ -->
         <main class="main" id="main">
 
-            <!-- Mobile topbar -->
+            <!-- Mobile Topbar -->
             <div class="topbar">
-                <button class="topbar-btn" id="menuBtn" onclick="toggleSidebar()">
+                <button class="topbar-btn" onclick="openSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <div class="topbar-brand">
                     <div class="brand-mark sm"><span>S</span></div>
-                    <span>Sol AI</span>
+                    <span>Swx Bot</span>
                 </div>
                 <button class="topbar-btn" onclick="startNewChat()">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
 
-            <!-- Scrollable hero + cards -->
+            <!-- Hero + Cards -->
             <div class="main-scroll" id="mainScroll">
 
                 <!-- HERO -->
-                <section class="hero" id="heroSection">
-                    <div class="hero-bg-grid"></div>
+                <section class="hero">
+                    <div class="hero-grid"></div>
                     <div class="hero-orb orb-1"></div>
                     <div class="hero-orb orb-2"></div>
 
                     <div class="hero-pill">
                         <span class="pill-dot"></span>
-                        AI-Powered Growth Assistant
+                        AI-Powered Support Assistant
                     </div>
 
                     <h1 class="hero-heading">
                         Understand your<br>
                         <em>health</em> better.
                     </h1>
-
                     <p class="hero-sub">
                         Ask about treatments, consultations, and how homoeopathy can help you.
                     </p>
 
                     <div class="stats-strip">
-                        <div class="stat">
-                            <strong>1 &colon; 1</strong>
-                            <span>
-                                Personalised care
-                            </span>
-                        </div>
-                        <div class="stat-divider"></div>
-                        <div class="stat">
-                            <strong>100%</strong>
-                            <span>Private consultations</span>
-                        </div>
-                        <div class="stat-divider"></div>
-                        <div class="stat">
-                            <strong>24/7</strong>
-                            <span>Always available guidance</span>
-                        </div>
+                        <div class="stat"><strong>1:1</strong><span>Personalised care</span></div>
+                        <div class="stat-div"></div>
+                        <div class="stat"><strong>100%</strong><span>Private consultations</span></div>
+                        <div class="stat-div"></div>
+                        <div class="stat"><strong>24/7</strong><span>Always available guidance</span></div>
                     </div>
                 </section>
 
                 <!-- SUGGESTION CARDS -->
-                <section class="suggestion-cards" id="suggCards">
-
-                    <button class="scard" onclick="quickAsk('What is Warrior Homoeopath?')">
+                <section class="suggestion-cards">
+                    <button class="scard" onclick="quickAsk('What is Swx Bot?')">
                         <div class="scard-icon"><i class="fa-solid fa-user-doctor"></i></div>
                         <div class="scard-text">
                             <strong>About us</strong>
                             <p>Understand our approach</p>
                         </div>
                     </button>
-
                     <button class="scard" onclick="quickAsk('How are consultations conducted?')">
                         <div class="scard-icon"><i class="fa-solid fa-video"></i></div>
                         <div class="scard-text">
@@ -173,15 +155,13 @@
                             <p>How online consultation works</p>
                         </div>
                     </button>
-
                     <button class="scard" onclick="quickAsk('What conditions do you treat?')">
                         <div class="scard-icon"><i class="fa-solid fa-heart-pulse"></i></div>
                         <div class="scard-text">
                             <strong>Conditions treated</strong>
-                            <p>Chronic & complex cases</p>
+                            <p>Chronic &amp; complex cases</p>
                         </div>
                     </button>
-
                     <button class="scard" onclick="quickAsk('How do I book a consultation?')">
                         <div class="scard-icon"><i class="fa-solid fa-calendar-check"></i></div>
                         <div class="scard-text">
@@ -193,26 +173,23 @@
 
             </div><!-- /main-scroll -->
 
-            <!-- ══════════════════════════════════════
-           CHAT SHELL — BOTTOM DRAWER
-      ══════════════════════════════════════ -->
+            <!-- ══════════════ CHAT SHELL ══════════════ -->
             <section class="chat-shell" id="chatShell">
 
-                <!-- Drag handle -->
+                <!-- Handle -->
                 <div class="drawer-handle" id="drawerHandle">
                     <div class="handle-bar"></div>
                     <span class="handle-label">
                         <i class="fa-solid fa-robot"></i>
-                        Chat with Sol AI
+                        CHAT WITH SWX BOT
                     </span>
                 </div>
 
-                <!-- Chat topbar -->
+                <!-- Chat Topbar -->
                 <div class="chat-topbar">
                     <div class="chat-topbar-left">
                         <div class="chat-status-dot"></div>
-                        <span>Hello 👋 I'm your <strong>Sol AI</strong>. How can I help you with your health concerns
-                            today?</span>
+                        <span>Hello 👋 I'm your <strong>Swx Bot</strong>. How can I help you today?</span>
                     </div>
                     <div class="chat-actions">
                         <button class="chat-act-btn" title="Search" onclick="toggleChatSearch()">
@@ -224,7 +201,7 @@
                     </div>
                 </div>
 
-                <!-- In-chat search -->
+                <!-- Search Bar -->
                 <div class="chat-search-bar" id="chatSearchBar">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="chatSearchInput" placeholder="Search conversation…"
@@ -235,15 +212,18 @@
                 <!-- Messages -->
                 <div class="messages" id="messages"></div>
 
-                <!-- Recommendations bar -->
+                <!-- Reco Bar -->
                 <div class="reco-bar" id="recoBar" style="display:none">
-                    <span class="reco-label"><i class="fa-solid fa-sparkles"></i> You might also ask:</span>
+                    <div class="reco-top">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>YOU MIGHT ALSO ASK:</span>
+                    </div>
                     <div class="reco-chips" id="recoChips"></div>
                 </div>
 
                 <!-- Composer -->
                 <div class="composer">
-                    <div class="composer-inner">
+                    <div class="composer-inner" id="composerInner">
                         <textarea id="userInput" placeholder="Ask about treatment, consultation, or your condition…"
                             rows="1" oninput="autoResize(this)"></textarea>
                         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
@@ -252,25 +232,287 @@
                     </div>
                 </div>
 
-            </section><!-- /chat-shell -->
-
+            </section>
         </main>
-    </div><!-- /app -->
-
-    <!-- Context menu -->
-    <div class="ctx-menu" id="ctxMenu">
-        <button onclick="quickAsk('Analyze my current marketing funnel');closeCtx()">
-            <i class="fa-solid fa-chart-line"></i> Analyze my funnel
-        </button>
-        <button onclick="quickAsk('What is the ROI of marketing automation?');closeCtx()">
-            <i class="fa-solid fa-percentage"></i> Calculate ROI
-        </button>
-        <button onclick="quickAsk('Compare starter vs growth plan');closeCtx()">
-            <i class="fa-solid fa-table-columns"></i> Compare plans
-        </button>
     </div>
 
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- ══════════════ SETTINGS MODAL ══════════════ -->
+    <div class="modal-backdrop" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </div>
+                <button class="modal-close" onclick="closeSettings()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Appearance -->
+                <div class="settings-section">
+                    <div class="section-label">APPEARANCE</div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Theme</span>
+                            <span class="setting-desc">Switch between dark and light mode</span>
+                        </div>
+                        <div class="toggle-group" id="themeToggle">
+                            <button class="tgl-opt active" data-val="dark" onclick="setSetting('theme','dark',this)">
+                                <i class="fa-solid fa-moon"></i> Dark
+                            </button>
+                            <button class="tgl-opt" data-val="light" onclick="setSetting('theme','light',this)">
+                                <i class="fa-solid fa-sun"></i> Light
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Font Size</span>
+                            <span class="setting-desc">Adjust message text size</span>
+                        </div>
+                        <div class="toggle-group" id="fontSizeToggle">
+                            <button class="tgl-opt" data-val="small"
+                                onclick="setSetting('fontSize','small',this)">S</button>
+                            <button class="tgl-opt active" data-val="medium"
+                                onclick="setSetting('fontSize','medium',this)">M</button>
+                            <button class="tgl-opt" data-val="large"
+                                onclick="setSetting('fontSize','large',this)">L</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Bubble Style</span>
+                            <span class="setting-desc">Choose message bubble shape</span>
+                        </div>
+                        <div class="toggle-group" id="bubbleToggle">
+                            <button class="tgl-opt active" data-val="rounded"
+                                onclick="setSetting('bubble','rounded',this)">Rounded</button>
+                            <button class="tgl-opt" data-val="sharp"
+                                onclick="setSetting('bubble','sharp',this)">Sharp</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Behaviour -->
+                <div class="settings-section">
+                    <div class="section-label">BEHAVIOUR</div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Sound Effects</span>
+                            <span class="setting-desc">Play a sound when a message arrives</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="soundToggle" onchange="setSetting('sound', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Typing Indicator</span>
+                            <span class="setting-desc">Show animated dots while bot responds</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="typingToggle" checked
+                                onchange="setSetting('typing', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Quick Questions</span>
+                            <span class="setting-desc">Show suggestion chips after replies</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="chipsToggle" checked
+                                onchange="setSetting('chips', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Questions Per Page</span>
+                            <span class="setting-desc">Number of chips shown at once</span>
+                        </div>
+                        <select class="setting-select" id="pageSizeSelect"
+                            onchange="setSetting('pageSize', parseInt(this.value))">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Data -->
+                <div class="settings-section">
+                    <div class="section-label">DATA</div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Export Chat</span>
+                            <span class="setting-desc">Share the current conversation as text</span>
+                        </div>
+                        <button class="action-btn" onclick="exportChat(); closeSettings();">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <span class="setting-label">Clear All History</span>
+                            <span class="setting-desc">Remove all saved sessions permanently</span>
+                        </div>
+                        <button class="action-btn danger" onclick="clearAllHistory()">
+                            <i class="fa-solid fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════ HELP MODAL ══════════════ -->
+    <div class="modal-backdrop" id="helpModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Help &amp; Info</span>
+                </div>
+                <button class="modal-close" onclick="closeHelp()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- About -->
+                <div class="settings-section">
+                    <div class="section-label">ABOUT SWX BOT</div>
+                    <div class="about-card">
+                        <div class="about-avatar">AI</div>
+                        <div>
+                            <strong>Swx Bot — Support Assistant</strong>
+                            <p>Your always-on support assistant. Ask anything about treatments, consultations,
+                                conditions, or how homoeopathy can help you.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to use -->
+                <div class="settings-section">
+                    <div class="section-label">HOW TO USE</div>
+                    <div class="help-steps">
+                        <div class="help-step">
+                            <div class="step-num">1</div>
+                            <div><strong>Type a question</strong> in the input box at the bottom and tap the send
+                                button.</div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-num">2</div>
+                            <div><strong>Tap a quick chip</strong> — pre-loaded suggestion chips appear after each
+                                reply.</div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-num">3</div>
+                            <div><strong>Browse topics</strong> using the Quick Actions in the sidebar.</div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-num">4</div>
+                            <div><strong>Start a new chat</strong> anytime with "+ New Conversation". Past sessions are
+                                saved.</div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-num">5</div>
+                            <div><strong>Search</strong> the conversation using the 🔍 icon in the chat header.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shortcuts -->
+                <div class="settings-section">
+                    <div class="section-label">KEYBOARD SHORTCUTS</div>
+                    <div class="shortcuts-list">
+                        <div class="shortcut-row"><kbd>Enter</kbd><span>Send message</span></div>
+                        <div class="shortcut-row"><kbd>Ctrl</kbd><span>+</span><kbd>K</kbd><span>Toggle search</span>
+                        </div>
+                        <div class="shortcut-row"><kbd>Ctrl</kbd><span>+</span><kbd>N</kbd><span>New chat</span></div>
+                        <div class="shortcut-row"><kbd>Esc</kbd><span>Close panel / search</span></div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="settings-section">
+                    <div class="section-label">FAQ</div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-q" onclick="toggleFaq(this)">
+                                <span>Why isn't Swx Bot answering my question?</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-a">Swx Bot can only answer questions in its knowledge base. Try rephrasing
+                                your question or tap a suggestion chip for supported topics.</div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-q" onclick="toggleFaq(this)">
+                                <span>Is this conversation private?</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-a">Conversations are stored locally in your browser only. No personal data
+                                is sent externally beyond the AI query.</div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-q" onclick="toggleFaq(this)">
+                                <span>How do I talk to a human?</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-a">Type "human" or "speak to someone" in the chat and Swx Bot will provide
+                                escalation contact details.</div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-q" onclick="toggleFaq(this)">
+                                <span>Can I export my conversation?</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-a">Yes! Go to Settings → Data → Export Chat to download the current
+                                conversation as a text file.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="settings-section">
+                    <div class="section-label">STILL NEED HELP?</div>
+                    <div class="contact-cards">
+                        <a class="contact-card" href="mailto:support@swxbot.com">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Email Support</span>
+                            <small>support@swxbot.com</small>
+                        </a>
+                        <a class="contact-card" href="tel:+91000000000">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>Call Us</span>
+                            <small>Mon–Fri, 9am–6pm</small>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="assistant.js"></script>
 </body>

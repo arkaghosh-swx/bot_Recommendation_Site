@@ -412,6 +412,37 @@ const FAQ_SEEN_KEY = "solworxs_faq_seen";
     observer.observe(pageWrap, { attributes: true });
 })();
 
+function keepReadingFaqs() {
+    // Smooth scroll back to top/content
+    faqContent.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+    if (typeof agentSay === "function") {
+        agentSay("📖 Explore all the FAQs!");
+    }
+}
+
+function startRecommendedBot() {
+
+    // Uses currentRecommendedKey from script.js
+    const bot = BOT_DATA[currentRecommendedKey];
+
+    if (!bot) return;
+
+    if (typeof agentSay === "function") {
+        agentSay("🚀 Launching your recommended bot!");
+    }
+
+    // Close FAQ drawer
+    closeFaqDrawer();
+
+    // Redirect after animation
+    setTimeout(() => {
+        window.location.href = bot.ctaHref;
+    }, 350);
+}
 /* ══════════════════════════════════════════
    INIT
 ══════════════════════════════════════════ */
