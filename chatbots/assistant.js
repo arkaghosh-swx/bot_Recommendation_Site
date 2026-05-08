@@ -4,7 +4,6 @@
 ═══════════════════════════════════════════ */
 
 // ── Config ────────────────────────────────
-// const GROQ_API_KEY = "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";
 
 const SUPABASE_URL = "https://sbzoxwvuoidtywvkabmz.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiem94d3Z1b2lkdHl3dmthYm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDYzNTAsImV4cCI6MjA5MTcyMjM1MH0.IrfSKiuShXz0RA26fn5NFUS-VLk3mQAwJoSu28prju4";
@@ -371,42 +370,8 @@ function findDirectMatch(userText, faqs) {
     }) || null;
 }
 
-// ── Groq API ──────────────────────────────
-// async function askGroq(prompt, faqContext, history) {
-//     const trimmed = history.slice(-20);
-//     try {
-//         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": "Bearer " + GROQ_API_KEY,
-//             },
-//             body: JSON.stringify({
-//                 model: "llama-3.1-8b-instant",
-//                 messages: [
-//                     { role: "system", content: SYSTEM_PROMPT + "\n\nFAQs:\n" + faqContext },
-//                     ...trimmed,
-//                     { role: "user", content: prompt }
-//                 ],
-//                 temperature: 0.7,
-//                 max_tokens: 1024,
-//                 stream: false,
-//             }),
-//         });
-//         const data = await response.json();
-//         if (data.choices && data.choices[0]) return data.choices[0].message.content;
-//         if (data.error) return `⚠️ API Error: ${data.error.message}`;
-//         return "No response received.";
-//     } catch (err) {
-//         console.error(err);
-//         return "⚠️ Connection failed. Please check your network and try again.";
-//     }
-// }
 
-// ── Send ──────────────────────────────────
-
-// ── Groq API (via secure server proxy) ───
-const SERVER_URL = "https://your-railway-url.up.railway.app";
+const SERVER_URL = "https://vibrant-charisma-production-b339.up.railway.app";
 
 async function askGroq(prompt, faqContext, history) {
     const trimmed = history.slice(-20);
