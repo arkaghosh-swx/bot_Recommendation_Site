@@ -1,7 +1,7 @@
 // lib/core/constants/app_constants.dart
 class AppConstants {
 
-static const String serverUrl = 'https://botrecommendationsite-production.up.railway.app/';
+static const String serverUrl = 'https://botrecommendationsite-production.up.railway.app';
 
   // ── Supabase ─────────────────────────────────────────────
   static const String supabaseUrl = 'https://sbzoxwvuoidtywvkabmz.supabase.co';
