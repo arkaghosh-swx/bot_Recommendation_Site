@@ -65,8 +65,6 @@ class _AppBackgroundState extends State<AppBackground>
 
         // Main content
         widget.child,
-
-// ── Powered By Footer ─────────────────────────
       ],
     );
   }
