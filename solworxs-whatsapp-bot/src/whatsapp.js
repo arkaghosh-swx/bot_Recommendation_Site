@@ -56,33 +56,33 @@ function sendListMenu(to) {
     type: "interactive",
     interactive: {
       type: "list",
-      header: {
-        type: "text",
-        text: "👋 Welcome to Solworxs AI",
-      },
+      header: { type: "text", text: "👋 Welcome to Warrior Homoeopath" },
       body: {
-        text: "We build enterprise-grade AI bots that automate workflows and elevate customer experiences.\n\nHow can I help you today?",
+        text: "Precision Homoeopathic care for chronic and complex conditions — worldwide. 🌿\n\nHow can I help you today?",
       },
-      footer: {
-        text: "Solworxs • solworxs.com",
-      },
+      footer: { text: "Aude sapere. Dare to heal." },
       action: {
         button: "📋 View Options",
         sections: [
           {
-            title: "Our Services",
+            title: "About & Conditions",
             rows: [
-              { id: "menu_products", title: "🤖 Our AI Bots", description: "Support Bot, AI Assistant, WhatsApp Bot" },
-              { id: "menu_pricing", title: "💰 Pricing", description: "Plans and packages" },
-              { id: "menu_demo", title: "📅 Book a Demo", description: "Schedule a free demo session" },
+              { id: "menu_about", title: "🏥 About Us", description: "Who we are and our approach" },
+              { id: "menu_conditions", title: "🩺 Conditions Treated", description: "What we can help with" },
+            ],
+          },
+          {
+            title: "Consultations",
+            rows: [
+              { id: "menu_consult", title: "💬 How It Works", description: "Online consultation details" },
+              { id: "menu_pricing", title: "💰 Pricing", description: "Consultation fees in GBP & INR" },
+              { id: "menu_book", title: "📅 Book Now", description: "Schedule your consultation" },
             ],
           },
           {
             title: "Support",
             rows: [
-              { id: "menu_support", title: "🙋 Talk to Our Team", description: "Get in touch with a human" },
-              { id: "menu_faq", title: "❓ FAQs", description: "Common questions answered" },
-              { id: "menu_about", title: "🏢 About Solworxs", description: "Who we are and what we do" },
+              { id: "menu_contact", title: "📞 Contact Us", description: "Email, phone & WhatsApp" },
             ],
           },
         ],

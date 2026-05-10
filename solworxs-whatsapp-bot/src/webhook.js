@@ -1,33 +1,25 @@
-// /home/solworxs11/Public/botRecommendationSite/solworxs-whatsapp-bot/src/webhook.js
 const { sendTextMessage, sendListMenu, sendButtonMessage } = require("./whatsapp");
 const { getAIReply } = require("./claude");
 
-// In-memory stores
-const conversations = {}; // chat history per user
-const seenUsers = {}; // track if user has been greeted
+const conversations = {};
+const seenUsers = {};
 
-// ── Verify webhook (Meta sends a GET to confirm your URL)
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
-
   if (mode === "subscribe" && token === process.env.WEBHOOK_VERIFY_TOKEN) {
-    console.log("✅ Webhook verified by Meta");
+    console.log("✅ Webhook verified");
     res.status(200).send(challenge);
   } else {
-    console.error("❌ Webhook verification failed");
     res.sendStatus(403);
   }
 }
 
-// ── Handle incoming messages
 async function handleWebhook(req, res) {
-  res.sendStatus(200); // always respond immediately
-
+  res.sendStatus(200);
   try {
     const body = req.body;
-
     if (
       body.object !== "whatsapp_business_account" ||
       !body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
@@ -37,156 +29,152 @@ async function handleWebhook(req, res) {
     const message = value.messages[0];
     const from = message.from;
 
-    // ── FIRST TIME user → show main list menu
     if (!seenUsers[from]) {
       seenUsers[from] = true;
       await sendListMenu(from);
       return;
     }
 
-    // ── User picked from LIST MENU
     if (message.type === "interactive" && message.interactive.type === "list_reply") {
-      const selectedId = message.interactive.list_reply.id;
-      await handleMenuSelection(from, selectedId);
+      await handleMenuSelection(from, message.interactive.list_reply.id);
       return;
     }
 
-    // ── User tapped a BUTTON
     if (message.type === "interactive" && message.interactive.type === "button_reply") {
-      const buttonId = message.interactive.button_reply.id;
-      await handleButtonReply(from, buttonId);
+      await handleButtonReply(from, message.interactive.button_reply.id);
       return;
     }
 
-    // ── Regular text message → AI reply
     if (message.type === "text") {
       const userText = message.text.body.trim();
-      console.log(`📩 Message from ${from}: ${userText}`);
-
       if (!conversations[from]) conversations[from] = [];
       conversations[from].push({ role: "user", content: userText });
       if (conversations[from].length > 10) conversations[from].shift();
-
       const reply = await getAIReply(conversations[from]);
       conversations[from].push({ role: "assistant", content: reply });
-
       await sendTextMessage(from, reply);
-
-      // After AI reply, offer to go back to menu
-      await sendButtonMessage(from, "Anything else I can help with?", [
+      await sendButtonMessage(from, "Can I help with anything else?", [
         { id: "btn_menu", title: "📋 Main Menu" },
-        { id: "btn_demo", title: "📅 Book a Demo" },
-        { id: "btn_support", title: "🙋 Talk to Team" },
+        { id: "btn_book", title: "📅 Book Now" },
+        { id: "btn_contact", title: "📞 Contact Us" },
       ]);
       return;
     }
 
-    // ── Unsupported message type
     await sendTextMessage(from, "Sorry, I can only handle text messages right now. 🙏");
-
   } catch (err) {
-    console.error("Error handling webhook:", err.message);
+    console.error("Webhook error:", err.message);
   }
 }
 
-// ── Handle main menu selections
 async function handleMenuSelection(from, selectedId) {
   switch (selectedId) {
 
-    case "menu_products":
+    case "menu_about":
       await sendTextMessage(from,
-        "🤖 *Our AI Bots*\n\n" +
-        "1. *Support Bot* — 24/7 customer support, FAQ handling, lead capture\n" +
-        "2. *AI Assistant* — Smart replies, demo booking, conversion analytics\n" +
-        "3. *WhatsApp Bot* — Instant replies, order updates, lead collection\n\n" +
-        "All bots are powered by advanced AI, secure cloud hosting, and real-time platform integrations."
+        "🏥 *About Warrior Homoeopath*\n\n" +
+        "We are a global collective of licensed Homoeopaths led by Dr Gayatri, with practitioners across India, UAE, and UK.\n\n" +
+        "We specialise in precision-based Homoeopathic care for chronic and complex conditions — focusing on root-cause resolution, not just symptom control.\n\n" +
+        "_Aude sapere. Dare to heal._ 🌿"
       );
-      await sendButtonMessage(from, "Would you like to know more?", [
+      await sendButtonMessage(from, "What would you like to know next?", [
+        { id: "btn_conditions", title: "🩺 Conditions" },
+        { id: "btn_consult", title: "💬 Consultations" },
+        { id: "btn_menu", title: "📋 Main Menu" },
+      ]);
+      break;
+
+    case "menu_conditions":
+      await sendTextMessage(from,
+        "🩺 *Conditions We Treat*\n\n" +
+        "• Skin: Eczema, Psoriasis, Acne, Vitiligo\n" +
+        "• Chronic: Migraines, PCOS, Hormonal imbalances\n" +
+        "• Digestive: SIBO, IBS, Indigestion\n" +
+        "• Mental health: Anxiety, Depression, Sleep issues\n" +
+        "• Autoimmune: Rheumatoid Arthritis, Lupus\n" +
+        "• Men's health: BPH, Male infertility\n" +
+        "• Veterans: PTSD, Chronic pain, Tinnitus\n" +
+        "• Autism spectrum support\n" +
+        "• And much more!\n\n" +
+        "📧 Not sure if we can help? Email ask@warriorhomoeopath.com"
+      );
+      await sendButtonMessage(from, "Ready to start your healing journey?", [
+        { id: "btn_book", title: "📅 Book Now" },
+        { id: "btn_pricing", title: "💰 Pricing" },
+        { id: "btn_menu", title: "📋 Main Menu" },
+      ]);
+      break;
+
+    case "menu_consult":
+      await sendTextMessage(from,
+        "💬 *About Consultations*\n\n" +
+        "All consultations are online via Zoom, Google Meet, or Teams.\n\n" +
+        "⏱ *Duration:*\n" +
+        "• First consultation: 45–60 mins\n" +
+        "• Follow-up: 30 mins\n" +
+        "• Urgent care: 15–20 mins\n\n" +
+        "🔒 100% private and confidential\n" +
+        "🌍 Available worldwide\n" +
+        "🗣 English only (translator welcome)"
+      );
+      await sendButtonMessage(from, "Would you like to book?", [
+        { id: "btn_book", title: "📅 Book Now" },
         { id: "btn_pricing", title: "💰 See Pricing" },
-        { id: "btn_demo", title: "📅 Book a Demo" },
         { id: "btn_menu", title: "📋 Main Menu" },
       ]);
       break;
 
     case "menu_pricing":
       await sendTextMessage(from,
-        "💰 *Pricing Plans*\n\n" +
-        "• *Starter* — ₹4,999/month\n  1 bot, up to 1,000 conversations\n\n" +
-        "• *Growth* — ₹9,999/month\n  2 bots, up to 5,000 conversations\n\n" +
-        "• *Enterprise* — Custom pricing\n  Unlimited bots & conversations\n\n" +
-        "All plans include setup support and analytics dashboard."
+        "💰 *Consultation Fees*\n\n" +
+        "🌍 *International (GBP):*\n" +
+        "• First consultation: £150\n" +
+        "• Follow-up: £75\n" +
+        "• Urgent care: £50\n\n" +
+        "🇮🇳 *India (INR):*\n" +
+        "• First consultation: ₹5,000\n" +
+        "• Follow-up: ₹1,500\n" +
+        "• Urgent care: ₹1,000\n\n" +
+        "⚠️ Medicines are NOT included and must be purchased separately.\n" +
+        "❌ No refunds once booked. Reschedule 48hrs in advance."
       );
-      await sendButtonMessage(from, "Ready to get started?", [
-        { id: "btn_demo", title: "📅 Book a Demo" },
-        { id: "btn_support", title: "🙋 Talk to Team" },
+      await sendButtonMessage(from, "Ready to book your consultation?", [
+        { id: "btn_book", title: "📅 Book Now" },
+        { id: "btn_consult", title: "💬 Learn More" },
         { id: "btn_menu", title: "📋 Main Menu" },
       ]);
       break;
 
-    case "menu_demo":
+    case "menu_book":
       await sendTextMessage(from,
-        "📅 *Book a Free Demo*\n\n" +
-        "We'd love to show you what our bots can do for your business!\n\n" +
-        "To schedule your free demo session:\n" +
-        "📧 Email us: info@solworxs.com\n" +
-        "🌐 Or visit: solworxs.com\n\n" +
-        "Our team will get back to you within 24 hours. ⚡"
+        "📅 *Book Your Consultation*\n\n" +
+        "Click the link below to book your appointment:\n" +
+        "👉 https://warriorhomoeopath.dayschedule.com\n\n" +
+        "For appointment queries:\n" +
+        "📧 appointment@warriorhomoeopath.com\n\n" +
+        "Our team will confirm your slot and send you a secure video link. 🌿"
       );
-      await sendButtonMessage(from, "Can I help with anything else?", [
-        { id: "btn_products", title: "🤖 Our Bots" },
+      await sendButtonMessage(from, "Anything else I can help with?", [
         { id: "btn_pricing", title: "💰 Pricing" },
+        { id: "btn_contact", title: "📞 Contact Us" },
         { id: "btn_menu", title: "📋 Main Menu" },
       ]);
       break;
 
-    case "menu_support":
+    case "menu_contact":
       await sendTextMessage(from,
-        "🙋 *Talk to Our Team*\n\n" +
-        "Our team is available Mon–Sat, 9AM–6PM IST.\n\n" +
-        "📞 Call us: +91 9676829514\n" +
-        "📧 Email: info@solworxs.com\n" +
-        "🌐 Website: solworxs.com\n" +
-        "📍 Location: Bangalore, India"
+        "📞 *Contact Warrior Homoeopath*\n\n" +
+        "📧 Appointments: appointment@warriorhomoeopath.com\n" +
+        "📧 Enquiries: ask@warriorhomoeopath.com\n\n" +
+        "📱 India: +91 9071961355\n" +
+        "📱 UK: +44 7700 148710\n\n" +
+        "🌐 Website: warriorhomeopath.com\n\n" +
+        "We respond within 24 hours. 💚"
       );
-      await sendButtonMessage(from, "Anything else?", [
+      await sendButtonMessage(from, "Can I help you further?", [
+        { id: "btn_book", title: "📅 Book Now" },
         { id: "btn_menu", title: "📋 Main Menu" },
-        { id: "btn_demo", title: "📅 Book a Demo" },
-        { id: "btn_faq", title: "❓ FAQs" },
-      ]);
-      break;
-
-    case "menu_faq":
-      await sendTextMessage(from,
-        "❓ *Frequently Asked Questions*\n\n" +
-        "*Q: How long does setup take?*\n" +
-        "A: Most bots go live within 24–48 hours.\n\n" +
-        "*Q: Do I need technical knowledge?*\n" +
-        "A: No. We handle everything for you.\n\n" +
-        "*Q: Which platforms do you integrate with?*\n" +
-        "A: Slack, WhatsApp, HubSpot, Salesforce, and more.\n\n" +
-        "*Q: Is there a free trial?*\n" +
-        "A: Yes — book a free demo to see it in action!"
-      );
-      await sendButtonMessage(from, "Still have questions?", [
-        { id: "btn_support", title: "🙋 Talk to Team" },
-        { id: "btn_demo", title: "📅 Book a Demo" },
-        { id: "btn_menu", title: "📋 Main Menu" },
-      ]);
-      break;
-
-    case "menu_about":
-      await sendTextMessage(from,
-        "🏢 *About Solworxs*\n\n" +
-        "Solworxs builds enterprise-grade AI bots that automate workflows, accelerate sales pipelines, and elevate customer experiences.\n\n" +
-        "🚀 10M+ conversations handled\n" +
-        "✅ 99.9% uptime SLA\n" +
-        "🔒 SOC-2 ready, enterprise encryption\n" +
-        "📍 Based in Bangalore, India"
-      );
-      await sendButtonMessage(from, "Interested in working with us?", [
-        { id: "btn_demo", title: "📅 Book a Demo" },
-        { id: "btn_pricing", title: "💰 See Pricing" },
-        { id: "btn_menu", title: "📋 Main Menu" },
+        { id: "btn_conditions", title: "🩺 Conditions" },
       ]);
       break;
 
@@ -195,29 +183,15 @@ async function handleMenuSelection(from, selectedId) {
   }
 }
 
-// ── Handle button taps
 async function handleButtonReply(from, buttonId) {
   switch (buttonId) {
-    case "btn_menu":
-      await sendListMenu(from);
-      break;
-    case "btn_demo":
-      await handleMenuSelection(from, "menu_demo");
-      break;
-    case "btn_support":
-      await handleMenuSelection(from, "menu_support");
-      break;
-    case "btn_pricing":
-      await handleMenuSelection(from, "menu_pricing");
-      break;
-    case "btn_products":
-      await handleMenuSelection(from, "menu_products");
-      break;
-    case "btn_faq":
-      await handleMenuSelection(from, "menu_faq");
-      break;
-    default:
-      await sendListMenu(from);
+    case "btn_menu": await sendListMenu(from); break;
+    case "btn_book": await handleMenuSelection(from, "menu_book"); break;
+    case "btn_contact": await handleMenuSelection(from, "menu_contact"); break;
+    case "btn_pricing": await handleMenuSelection(from, "menu_pricing"); break;
+    case "btn_conditions": await handleMenuSelection(from, "menu_conditions"); break;
+    case "btn_consult": await handleMenuSelection(from, "menu_consult"); break;
+    default: await sendListMenu(from);
   }
 }
 
