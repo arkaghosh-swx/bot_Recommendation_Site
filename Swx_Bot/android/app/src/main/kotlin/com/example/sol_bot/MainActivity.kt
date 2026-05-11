@@ -1,4 +1,4 @@
-package com.example.Swx Bot
+package com.example.Swx_Bot
 
 import io.flutter.embedding.android.FlutterActivity
 
