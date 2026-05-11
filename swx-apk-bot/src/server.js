@@ -77,7 +77,10 @@ app.post("/api/chat", async (req, res) => {
             },
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
-                messages,
+                messages: [
+                    { role: "system", content: SYSTEM_PROMPT },
+                    ...messages
+                ],
                 temperature: 0.7,
                 max_tokens: 1024,
             }),
