@@ -73,7 +73,7 @@ Rules:
 async function getAIReply(messages) {
   try {
     const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-sonnet-4-20250514",
       max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages,
