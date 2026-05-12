@@ -420,12 +420,6 @@ const _origRoamTick = window.roamTick;
 function initFaqSolIntegration() {
     if (!agentBotEl) return;
 
-    // Listen for Sol clicks and open FAQ drawer
-    // agentBotEl.addEventListener("click", () => {
-    // Only open if not dragging (hasMoved is set in script.js)
-    //     if (typeof hasMoved !== "undefined" && hasMoved) return;
-    //     openFaqDrawer();
-    // });
 }
 
 /* ══════════════════════════════════════════
