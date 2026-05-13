@@ -215,7 +215,7 @@ async function detectAndRecommend() {
         // India → WhatsApp
         // Others → AI
         currentRecommendedKey =
-            country === "IN" ? "whatsapp" : "ai";
+            country === "Us" ? "whatsapp" : "ai";
 
         populateModal(currentRecommendedKey, `📍 ${locStr}`);
 
@@ -411,12 +411,12 @@ roamTick();
 /* ══════════════════════════════════════════
    DRAG — mouse + touch
 ══════════════════════════════════════════ */
-// let isDragging = false;
-// let dragOffsetX = 0;
-// let dragOffsetY = 0;
-// let hasMoved = false;   
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let hasMoved = false;   
 // distinguish drag vs click
-// let resumeTimer = null;
+let resumeTimer = null;
 
 let dragStartX = 0, dragStartY = 0;
 const DRAG_THRESHOLD = 8;
