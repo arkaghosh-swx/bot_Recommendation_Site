@@ -197,11 +197,12 @@ body {
     width: 44px;
     height: 44px;
     border-radius: 13px;
-    background: #fff;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .brand-mark span {
